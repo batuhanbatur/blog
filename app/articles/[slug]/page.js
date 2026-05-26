@@ -1,4 +1,5 @@
 import { posts } from "../../data/posts"
+import Link from "next/link"
 
 export default async function ArticlePage({ params }) {
   const { slug } = await params
@@ -16,6 +17,21 @@ export default async function ArticlePage({ params }) {
         padding: "80px 24px",
       }}
     >
+      <Link
+        href="/"
+        style={{
+          display: "inline-block",
+          fontSize: "12px",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "#1D1D0C",
+          opacity: 0.4,
+          textDecoration: "none",
+          marginBottom: "48px",
+        }}
+      >
+        ← Back
+      </Link>
       <h1
         style={{
           fontSize: "48px",

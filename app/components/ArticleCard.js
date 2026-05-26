@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function ArticleCard({ post }) {
   const [buttonState, setButtonState] = useState("default")
@@ -11,13 +13,14 @@ export default function ArticleCard({ post }) {
     clicked: "There you go ↓",
   }
 
+  const router = useRouter()
+
   const handleClick = () => {
     setButtonState("clicked")
     setTimeout(() => {
-      window.location.href = `/articles/${post.slug}`
+      router.push(`/articles/${post.slug}`)
     }, 800)
   }
-
   return (
     <div
       style={{

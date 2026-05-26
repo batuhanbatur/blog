@@ -82,3 +82,8 @@ body {
   color: var(--color-navbar);
   font-family: 'Satoshi', sans-serif;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

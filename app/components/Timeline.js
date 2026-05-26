@@ -1,6 +1,7 @@
 import ArticleCard from "./ArticleCard"
 import StatusUpdate from "./StatusUpdate"
 import { posts } from "../data/posts"
+import SwordDivider from "./SwordDivider"
 
 export default function Timeline() {
   const sortedPosts = [...posts].sort(
@@ -12,25 +13,29 @@ export default function Timeline() {
   return (
     <section
       style={{
-        padding: "64px 64px 64px 64px",
+        padding: "64px 80px 64px 64px",
       }}
     >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "48px",
         }}
       >
-        {sortedPosts.map(post => {
+        {sortedPosts.map((post, index) => {
+          const isLast = index === sortedPosts.length - 1
+
+          let item = null
+
           if (post.type === "article") {
             statusCounter = 0
-            return <ArticleCard key={post.id} post={post} />
+            item = <ArticleCard key={post.id} post={post} />
           }
+
           if (post.type === "status") {
             const isRight = statusCounter % 2 !== 0
             statusCounter++
-            return (
+            item = (
               <div
                 key={post.id}
                 style={{
@@ -44,7 +49,13 @@ export default function Timeline() {
               </div>
             )
           }
-          return null
+
+          return (
+            <div key={post.id}>
+              <div style={{ padding: "48px 0" }}>{item}</div>
+              {!isLast && <SwordDivider />}
+            </div>
+          )
         })}
       </div>
     </section>
