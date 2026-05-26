@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# the-blog
 
-## Getting Started
+A personal reading platform built with Next.js and React.
 
-First, run the development server:
+Not a standard blog — a living content ecosystem with AI-assisted features, interactive reading experiences, and a chronological timeline of articles and thoughts.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js 15 (App Router)
+- React
+- Tailwind CSS
+- Supabase (coming soon)
+- Anthropic API for AI layer (coming soon)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features (v1)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Sticky navbar with custom BB logo
+- Landing section with daily message
+- Chronological timeline — articles and status updates
+- Zigzag layout for status updates
+- Dedicated article pages
+- Tone and language tags
+- "Keep Reading" micro-interaction
 
-## Learn More
+## Planned Features
 
-To learn more about Next.js, take a look at the following resources:
+- AI-assisted article classification and tagging
+- Smart internal article linking
+- Hover word explanations
+- Hover gif easter eggs
+- Article preview cards on hover
+- Reading progress indicator
+- Dashboard for content management
+- Daily message archive
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Projects
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Part of a portfolio that includes **Pizza God** and **WC26 Tournament App**.
 
-## Deploy on Vercel
+## Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Batuhan Batur — Frontend Developer, ex-Apple
