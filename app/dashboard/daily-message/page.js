@@ -29,24 +29,39 @@ export default function DailyMessageDashboard() {
       return
     }
 
-    // deactivate all existing
+    // deactivate all
     await supabase
       .from("daily_messages")
       .update({ active: false })
       .neq("id", "00000000-0000-0000-0000-000000000000")
 
-    const { error } = await supabase.from("daily_messages").insert([
-      {
-        quote: quote.trim(),
-        attribution: attribution.trim(),
-        active: true,
-        date: new Date().toISOString().split("T")[0],
-      },
-    ])
+    // check if quote already exists
+    const { data: existing } = await supabase
+      .from("daily_messages")
+      .select("*")
+      .eq("quote", quote.trim())
+      .single()
 
-    if (error) {
-      setError(error.message)
-      return
+    if (existing) {
+      // reactivate existing
+      await supabase
+        .from("daily_messages")
+        .update({ active: true, date: new Date().toISOString().split("T")[0] })
+        .eq("id", existing.id)
+    } else {
+      // insert new
+      const { error } = await supabase.from("daily_messages").insert([
+        {
+          quote: quote.trim(),
+          attribution: attribution.trim(),
+          active: true,
+          date: new Date().toISOString().split("T")[0],
+        },
+      ])
+      if (error) {
+        setError(error.message)
+        return
+      }
     }
 
     setSubmitted(true)

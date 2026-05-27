@@ -175,9 +175,9 @@ export default function AboutPage() {
                 margin: 0,
               }}
             >
-              Want to contact me?
+              Feel free to reach out.
             </p>
-            <a href="mailto:batu@batuhanbatur.com" style={contactStyle}>
+            <a href="/contact" style={contactStyle}>
               Contact
             </a>
           </div>

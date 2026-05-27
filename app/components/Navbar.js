@@ -76,7 +76,7 @@ export default function Navbar() {
       >
         <li>
           <a
-            href="#"
+            href="/"
             style={{
               color: "white",
               textDecoration: "none",
@@ -89,7 +89,7 @@ export default function Navbar() {
         </li>
         <li>
           <a
-            href="#"
+            href="/#timeline"
             style={{
               color: "white",
               textDecoration: "none",
@@ -102,7 +102,7 @@ export default function Navbar() {
         </li>
         <li>
           <a
-            href="#"
+            href="/archive"
             style={{
               color: "white",
               textDecoration: "none",
@@ -128,7 +128,7 @@ export default function Navbar() {
         </li>
         <li>
           <a
-            href="#"
+            href="/contact"
             style={{
               color: "white",
               textDecoration: "none",
