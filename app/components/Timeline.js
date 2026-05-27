@@ -16,7 +16,12 @@ export default async function Timeline() {
   const allPosts = [
     ...(articles || []).map(a => ({ ...a, type: "article" })),
     ...(statusUpdates || []).map(s => ({ ...s, type: "status" })),
-  ].sort((a, b) => new Date(b.date) - new Date(a.date))
+  ].sort((a, b) => {
+    const dateA = new Date(b.date)
+    const dateB = new Date(a.date)
+    if (dateA - dateB !== 0) return dateA - dateB
+    return new Date(b.created_at) - new Date(a.created_at)
+  })
 
   let statusCounter = 0
 

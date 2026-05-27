@@ -1,8 +1,19 @@
-export default function LandingSection() {
+import { supabase } from "../lib/supabase"
+
+export default async function LandingSection() {
+  const { data: message } = await supabase
+    .from("daily_messages")
+    .select("*")
+    .eq("active", true)
+    .single()
+
+  const quote = message?.quote || "You're gonna carry that weight."
+  const attribution = message?.attribution || "Cowboy Bebop"
+
   return (
     <section
       style={{
-        padding: "80px 64px 24px 64px",
+        padding: "80px 64px 64px 64px",
         minHeight: "60vh",
       }}
     >
@@ -10,8 +21,8 @@ export default function LandingSection() {
         style={{
           display: "flex",
           alignItems: "flex-start",
-          gap: "80px",
           justifyContent: "center",
+          gap: "80px",
         }}
       >
         <div
@@ -88,7 +99,7 @@ export default function LandingSection() {
                 fontFamily: "Tanker, sans-serif",
               }}
             >
-              "You're gonna carry that weight."
+              "{quote}"
             </p>
             <p
               style={{
@@ -101,7 +112,7 @@ export default function LandingSection() {
                 fontFamily: "Aktura, sans-serif",
               }}
             >
-              — Cowboy Bebop
+              — {attribution}
             </p>
           </div>
         </div>
