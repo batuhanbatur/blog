@@ -3,6 +3,8 @@ import StatusUpdate from "./StatusUpdate"
 import SwordDivider from "./SwordDivider"
 import { supabase } from "../lib/supabase"
 
+export const revalidate = 0
+
 export default async function Timeline() {
   const { data: articles } = await supabase
     .from("articles")

@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { supabase } from "../../lib/supabase"
 
+export const revalidate = 0
+
 export default async function ArticlePage({ params }) {
   const { slug } = await params
 
