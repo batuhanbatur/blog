@@ -115,7 +115,7 @@ export default function Navbar() {
         </li>
         <li>
           <a
-            href="#"
+            href="/about"
             style={{
               color: "white",
               textDecoration: "none",
