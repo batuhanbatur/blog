@@ -1,5 +1,5 @@
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import NavbarWrapper from "./components/NavbarWrapper";
 
 export const metadata = {
   title: "the blog",
@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <NavbarWrapper />
         {children}
       </body>
     </html>

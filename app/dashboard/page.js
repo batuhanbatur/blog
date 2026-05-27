@@ -1,4 +1,29 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "../lib/supabase"
+
 export default function Dashboard() {
+  const router = useRouter()
+  const [checking, setChecking] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) {
+        router.push("/dashboard/login")
+      } else {
+        setChecking(false)
+      }
+    }
+    checkAuth()
+  }, [])
+
+  if (checking) return null
+
   return (
     <main
       style={{
@@ -35,16 +60,39 @@ export default function Dashboard() {
           >
             Dashboard
           </h1>
-          <span
-            style={{
-              fontSize: "12px",
-              opacity: 0.4,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}
-          >
-            the-blog
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <span
+              style={{
+                fontSize: "12px",
+                opacity: 0.4,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+            >
+              the-blog
+            </span>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut()
+                router.push("/dashboard/login")
+              }}
+              style={{
+                backgroundColor: "transparent",
+                border: "1px solid rgba(204, 198, 184, 0.2)",
+                borderRadius: "4px",
+                padding: "6px 14px",
+                fontSize: "11px",
+                color: "#CCC6B8",
+                cursor: "pointer",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                fontFamily: "Satoshi, sans-serif",
+                opacity: 0.6,
+              }}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         <div
