@@ -2,8 +2,8 @@ export default function LandingSection() {
   return (
     <section
       style={{
-        padding: "80px 64px 64px 64px",
-        minHeight: "70vh",
+        padding: "80px 64px 24px 64px",
+        minHeight: "60vh",
       }}
     >
       <div

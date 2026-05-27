@@ -24,8 +24,7 @@ export default function ArticleCard({ post }) {
   return (
     <div
       style={{
-        borderBottom: "1px solid rgba(29, 29, 12, 0.15)",
-        paddingBottom: "48px",
+        paddingBottom: "32px",
       }}
     >
       <h2
@@ -51,7 +50,7 @@ export default function ArticleCard({ post }) {
           alignItems: "center",
         }}
       >
-        {[post.tags.language, ...post.tags.tone].map(tag => (
+        {[post.language_tag, ...(post.tone_tags || [])].map(tag => (
           <span
             key={tag}
             style={{
@@ -82,7 +81,7 @@ export default function ArticleCard({ post }) {
           {post.date}
         </span>
         <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.4 }}>
-          {post.readingTime} read
+          {post.reading_time} read
         </span>
       </div>
 

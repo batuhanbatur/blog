@@ -1,19 +1,29 @@
 import ArticleCard from "./ArticleCard"
 import StatusUpdate from "./StatusUpdate"
-import { posts } from "../data/posts"
 import SwordDivider from "./SwordDivider"
+import { supabase } from "../lib/supabase"
 
-export default function Timeline() {
-  const sortedPosts = [...posts].sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  )
+export default async function Timeline() {
+  const { data: articles } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("status", "published")
+
+  const { data: statusUpdates } = await supabase
+    .from("status_updates")
+    .select("*")
+
+  const allPosts = [
+    ...(articles || []).map(a => ({ ...a, type: "article" })),
+    ...(statusUpdates || []).map(s => ({ ...s, type: "status" })),
+  ].sort((a, b) => new Date(b.date) - new Date(a.date))
 
   let statusCounter = 0
 
   return (
     <section
       style={{
-        padding: "64px 80px 64px 64px",
+        padding: "16px 80px 64px 64px",
       }}
     >
       <div
@@ -22,8 +32,8 @@ export default function Timeline() {
           flexDirection: "column",
         }}
       >
-        {sortedPosts.map((post, index) => {
-          const isLast = index === sortedPosts.length - 1
+        {allPosts.map((post, index) => {
+          const isLast = index === allPosts.length - 1
 
           let item = null
 

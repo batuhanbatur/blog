@@ -1,9 +1,14 @@
-import { posts } from "../../data/posts"
 import Link from "next/link"
+import { supabase } from "../../lib/supabase"
 
 export default async function ArticlePage({ params }) {
   const { slug } = await params
-  const post = posts.find(p => p.slug === slug)
+
+  const { data: post } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("slug", slug)
+    .single()
 
   if (!post) {
     return <div>Article not found.</div>
@@ -32,6 +37,7 @@ export default async function ArticlePage({ params }) {
       >
         ← Back
       </Link>
+
       <h1
         style={{
           fontSize: "48px",
@@ -53,7 +59,7 @@ export default async function ArticlePage({ params }) {
           flexWrap: "wrap",
         }}
       >
-        {[post.tags.language, ...post.tags.tone].map(tag => (
+        {[post.language_tag, ...(post.tone_tags || [])].map(tag => (
           <span
             key={tag}
             style={{
@@ -83,7 +89,7 @@ export default async function ArticlePage({ params }) {
           {post.date}
         </span>
         <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.4 }}>
-          {post.readingTime} read
+          {post.reading_time} read
         </span>
       </div>
 
