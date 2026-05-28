@@ -1,16 +1,22 @@
 "use client"
 
 import GifWord from "./GifWord"
-import { parseGifTriggers } from "../lib/parseGifTriggers"
+import ArticleWord from "./ArticleWord"
+import WordCard from "./WordCard"
+import { parseContentMarkers } from "../lib/parseContentMarkers"
 
 export default function RichText({ content, style }) {
-  const segments = parseGifTriggers(content)
+  const segments = parseContentMarkers(content)
 
   return (
     <span style={style}>
       {segments.map((seg, i) =>
         seg.type === "gif" ? (
           <GifWord key={i} phrase={seg.phrase} gifUrl={seg.gifUrl} />
+        ) : seg.type === "article" ? (
+          <ArticleWord key={i} phrase={seg.phrase} slug={seg.slug} />
+        ) : seg.type === "word" ? (
+          <WordCard key={i} phrase={seg.phrase} explanation={seg.explanation} phonemic={seg.phonemic} />
         ) : (
           <span key={i}>{seg.content}</span>
         )

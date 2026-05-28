@@ -1,9 +1,10 @@
+import { unstable_noStore as noStore } from "next/cache"
 import { supabase } from "../lib/supabase"
 import LandingLayout from "./LandingLayout"
 
-export const revalidate = 0
-
 export default async function LandingSection() {
+  noStore()
+
   const { data: message } = await supabase
     .from("daily_messages")
     .select("*")

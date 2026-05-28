@@ -2,10 +2,10 @@ import ArticleCard from "./ArticleCard"
 import StatusUpdate from "./StatusUpdate"
 import SwordDivider from "./SwordDivider"
 import { supabase } from "../lib/supabase"
-
-export const revalidate = 0
+import { unstable_noStore as noStore } from "next/cache"
 
 export default async function Timeline() {
+  noStore()
   const { data: articles } = await supabase
     .from("articles")
     .select("*")

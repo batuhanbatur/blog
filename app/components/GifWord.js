@@ -18,7 +18,7 @@ export default function GifWord({ phrase, gifUrl }) {
           position: "absolute",
           bottom: "calc(100% + 24px)",
           left: "0%",
-          backgroundColor: "#CCC6B8",
+          backgroundColor: "#BAB1A0",
           border: "1px solid rgba(29,29,12,0.15)",
           borderRadius: "4px",
           padding: "6px",

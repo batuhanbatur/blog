@@ -26,6 +26,7 @@ export default function ArticlesDashboard() {
   const [slug, setSlug] = useState("")
   const [content, setContent] = useState("")
   const [excerpt, setExcerpt] = useState("")
+  const [hoverDescription, setHoverDescription] = useState("")
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
   const [readingTime, setReadingTime] = useState("")
   const [languageTag, setLanguageTag] = useState("Mixed")
@@ -70,6 +71,7 @@ export default function ArticlesDashboard() {
     setSlug("")
     setContent("")
     setExcerpt("")
+    setHoverDescription("")
     setDate(new Date().toISOString().split("T")[0])
     setReadingTime("")
     setLanguageTag("Mixed")
@@ -86,6 +88,7 @@ export default function ArticlesDashboard() {
     setSlug(article.slug)
     setContent(article.content)
     setExcerpt(article.excerpt || "")
+    setHoverDescription(article.hover_description || "")
     setDate(article.date)
     setReadingTime(article.reading_time || "")
     setLanguageTag(article.language_tag || "Mixed")
@@ -161,6 +164,7 @@ export default function ArticlesDashboard() {
         .map(t => t.trim())
         .filter(Boolean),
       status,
+      hover_description: hoverDescription.trim() || null,
     }
 
     if (editingArticle) {
@@ -489,6 +493,16 @@ export default function ArticlesDashboard() {
                 value={excerpt}
                 onChange={e => setExcerpt(e.target.value)}
                 placeholder="Short description"
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Hover Description</label>
+              <input
+                value={hoverDescription}
+                onChange={e => setHoverDescription(e.target.value)}
+                placeholder="Shown when someone hovers an article link — keep it one sentence."
                 style={inputStyle}
               />
             </div>
