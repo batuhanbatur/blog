@@ -1,10 +1,12 @@
 import Link from "next/link"
+import { unstable_noStore as noStore } from "next/cache"
 import { supabase } from "../../lib/supabase"
+import ArticleBody from "../../components/ArticleBody"
 
-export const revalidate = 0
-
-export default async function ArticlePage({ params }) {
+export default async function ArticlePage({ params, searchParams }) {
+  noStore()
   const { slug } = await params
+  const shouldContinue = (await searchParams)?.continue === "1"
 
   const { data: post } = await supabase
     .from("articles")
@@ -95,20 +97,7 @@ export default async function ArticlePage({ params }) {
         </span>
       </div>
 
-      <div
-        style={{
-          fontSize: "16px",
-          lineHeight: "1.8",
-          color: "#1D1D0C",
-          fontFamily: "Satoshi, sans-serif",
-        }}
-      >
-        {post.content.split("\n\n").map((paragraph, index) => (
-          <p key={index} style={{ marginBottom: "24px" }}>
-            {paragraph}
-          </p>
-        ))}
-      </div>
+      <ArticleBody content={post.content} shouldContinue={shouldContinue} />
     </main>
   )
 }

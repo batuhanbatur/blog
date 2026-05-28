@@ -19,7 +19,7 @@ export default function ArticleCard({ post }) {
   const handleClick = () => {
     setButtonState("clicked")
     setTimeout(() => {
-      router.push(`/articles/${post.slug}`)
+      router.push(`/articles/${post.slug}?continue=1`)
     }, 30)
   }
   return (
