@@ -20,7 +20,7 @@ export default function ArticleCard({ post }) {
     setButtonState("clicked")
     setTimeout(() => {
       router.push(`/articles/${post.slug}`)
-    }, 100)
+    }, 30)
   }
   return (
     <div

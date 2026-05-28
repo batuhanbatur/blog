@@ -8,7 +8,7 @@ export default function SwordDivider() {
       }}
     >
       <img
-        src="/sword-divider.png"
+        src="/sword-divider.webp"
         alt="divider"
         style={{
           width: "64px",
