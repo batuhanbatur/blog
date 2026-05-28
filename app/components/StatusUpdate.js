@@ -1,3 +1,5 @@
+import RichText from "./RichText"
+
 export default function StatusUpdate({ post }) {
   return (
     <div
@@ -16,9 +18,10 @@ export default function StatusUpdate({ post }) {
           color: "#1D1D0C",
           margin: "0 0 8px 0",
           fontFamily: "monospace",
+          whiteSpace: "pre-wrap",
         }}
       >
-        {post.content}
+        <RichText content={post.content} />
       </p>
       <span
         style={{

@@ -16,7 +16,10 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
+    const handleScroll = () => {
+      if (window.scrollY > 20) setMenuOpen(false)
+      setScrolled(window.scrollY > 20)
+    }
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
       if (window.innerWidth >= 768) setMenuOpen(false)
@@ -115,7 +118,7 @@ export default function Navbar() {
 
         {isMobile && (
           <button
-            onClick={() => setMenuOpen((o) => !o)}
+            onClick={() => setMenuOpen(o => !o)}
             aria-label="Toggle menu"
             style={{
               background: "none",
@@ -128,12 +131,28 @@ export default function Navbar() {
             }}
           >
             {menuOpen ? (
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="white" strokeWidth="2" strokeLinecap="square">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="square"
+              >
                 <line x1="3" y1="3" x2="19" y2="19" />
                 <line x1="19" y1="3" x2="3" y2="19" />
               </svg>
             ) : (
-              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="white" strokeWidth="2" strokeLinecap="square">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 22 22"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="square"
+              >
                 <line x1="2" y1="6" x2="20" y2="6" />
                 <line x1="2" y1="11" x2="20" y2="11" />
                 <line x1="2" y1="16" x2="20" y2="16" />
@@ -147,7 +166,7 @@ export default function Navbar() {
         <div
           style={{
             position: "fixed",
-            top: "56px",
+            top: "55px",
             left: 0,
             right: 0,
             backgroundColor: "#1D1D0C",

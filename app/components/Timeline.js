@@ -29,6 +29,7 @@ export default async function Timeline() {
 
   return (
     <section
+      className="tl-section"
       style={{
         padding: "16px 80px 64px 64px",
       }}
@@ -55,12 +56,13 @@ export default async function Timeline() {
             item = (
               <div
                 key={post.id}
+                className="tl-status-row"
                 style={{
                   display: "flex",
                   justifyContent: isRight ? "flex-end" : "flex-start",
                 }}
               >
-                <div style={{ width: "60%" }}>
+                <div className="tl-status-card" style={{ width: "60%" }}>
                   <StatusUpdate post={post} />
                 </div>
               </div>
@@ -75,6 +77,14 @@ export default async function Timeline() {
           )
         })}
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .tl-section { padding: 16px 24px 48px 24px !important; }
+          .tl-status-row { justify-content: flex-start !important; }
+          .tl-status-card { width: 100% !important; }
+        }
+      `}</style>
     </section>
   )
 }

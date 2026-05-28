@@ -1,7 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { supabase } from "../../lib/supabase"
+
+const gifBtnStyle = {
+  backgroundColor: "transparent",
+  border: "1px solid rgba(204, 198, 184, 0.2)",
+  borderRadius: "4px",
+  padding: "8px 16px",
+  fontSize: "11px",
+  color: "#CCC6B8",
+  cursor: "pointer",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  fontFamily: "Satoshi, sans-serif",
+  flexShrink: 0,
+}
 
 export default function ArticlesDashboard() {
   const [view, setView] = useState("list")
@@ -21,9 +35,14 @@ export default function ArticlesDashboard() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    fetchArticles()
-  }, [])
+  const [showGifPanel, setShowGifPanel] = useState(false)
+  const [gifPhrase, setGifPhrase] = useState("")
+  const [gifSearchQuery, setGifSearchQuery] = useState("")
+  const [giphyResults, setGiphyResults] = useState([])
+  const [selectedGif, setSelectedGif] = useState(null)
+  const [gifSearching, setGifSearching] = useState(false)
+
+  const textareaRef = useRef(null)
 
   const fetchArticles = async () => {
     const { data } = await supabase
@@ -31,6 +50,18 @@ export default function ArticlesDashboard() {
       .select("*")
       .order("date", { ascending: false })
     if (data) setArticles(data)
+  }
+
+  useEffect(() => {
+    fetchArticles()
+  }, [])
+
+  const resetGifPanel = () => {
+    setShowGifPanel(false)
+    setGifPhrase("")
+    setGifSearchQuery("")
+    setGiphyResults([])
+    setSelectedGif(null)
   }
 
   const handleNew = () => {
@@ -45,6 +76,7 @@ export default function ArticlesDashboard() {
     setToneTags("")
     setTopicTags("")
     setStatus("draft")
+    resetGifPanel()
     setView("editor")
   }
 
@@ -60,6 +92,7 @@ export default function ArticlesDashboard() {
     setToneTags((article.tone_tags || []).join(", "))
     setTopicTags((article.topic_tags || []).join(", "))
     setStatus(article.status || "draft")
+    resetGifPanel()
     setView("editor")
   }
 
@@ -79,6 +112,30 @@ export default function ArticlesDashboard() {
           .replace(/(^-|-$)/g, ""),
       )
     }
+  }
+
+  const searchGiphy = async () => {
+    if (!gifSearchQuery.trim()) return
+    setGifSearching(true)
+    setSelectedGif(null)
+    try {
+      const res = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_GIPHY_API_KEY}&q=${encodeURIComponent(gifSearchQuery)}&limit=9&rating=g`
+      )
+      const data = await res.json()
+      setGiphyResults(data.data || [])
+    } finally {
+      setGifSearching(false)
+    }
+  }
+
+  const insertGifMarker = () => {
+    if (!gifPhrase.trim() || !selectedGif) return
+    const marker = `[${gifPhrase.trim()}](gif:${selectedGif.images.original.url})`
+    const textarea = textareaRef.current
+    const start = textarea ? textarea.selectionStart : content.length
+    setContent(content.slice(0, start) + marker + content.slice(start))
+    resetGifPanel()
   }
 
   const handleSubmit = async () => {
@@ -439,6 +496,7 @@ export default function ArticlesDashboard() {
             <div>
               <label style={labelStyle}>Content</label>
               <textarea
+                ref={textareaRef}
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 placeholder="Write your article here. Separate paragraphs with a blank line."
@@ -449,6 +507,85 @@ export default function ArticlesDashboard() {
                   lineHeight: "1.7",
                 }}
               />
+            </div>
+
+            {/* Add GIF Panel */}
+            <div>
+              <button
+                onClick={() => setShowGifPanel(p => !p)}
+                style={{ ...gifBtnStyle, opacity: 0.7 }}
+              >
+                Add GIF {showGifPanel ? "▲" : "▼"}
+              </button>
+
+              {showGifPanel && (
+                <div style={{
+                  marginTop: "12px",
+                  backgroundColor: "rgba(204, 198, 184, 0.03)",
+                  border: "1px solid rgba(204, 198, 184, 0.1)",
+                  borderRadius: "6px",
+                  padding: "16px",
+                }}>
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Phrase</label>
+                    <input
+                      style={inputStyle}
+                      placeholder="e.g. Challenge Accepted"
+                      value={gifPhrase}
+                      onChange={e => setGifPhrase(e.target.value)}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={labelStyle}>Search Giphy</label>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        style={inputStyle}
+                        placeholder="e.g. celebrate"
+                        value={gifSearchQuery}
+                        onChange={e => setGifSearchQuery(e.target.value)}
+                        onKeyDown={e => e.key === "Enter" && searchGiphy()}
+                      />
+                      <button onClick={searchGiphy} disabled={gifSearching} style={gifBtnStyle}>
+                        {gifSearching ? "..." : "Search"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {giphyResults.length > 0 && (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "12px" }}>
+                      {giphyResults.map(gif => (
+                        <div
+                          key={gif.id}
+                          onClick={() => setSelectedGif(gif)}
+                          style={{
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                            overflow: "hidden",
+                            border: selectedGif?.id === gif.id ? "2px solid #CCC6B8" : "2px solid transparent",
+                            opacity: selectedGif && selectedGif.id !== gif.id ? 0.5 : 1,
+                            transition: "opacity 0.15s, border-color 0.15s",
+                          }}
+                        >
+                          <img src={gif.images.fixed_height.url} alt={gif.title} style={{ width: "100%", display: "block" }} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={insertGifMarker}
+                    disabled={!gifPhrase.trim() || !selectedGif}
+                    style={{
+                      ...gifBtnStyle,
+                      opacity: (!gifPhrase.trim() || !selectedGif) ? 0.3 : 0.9,
+                      cursor: (!gifPhrase.trim() || !selectedGif) ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    Insert at Cursor
+                  </button>
+                </div>
+              )}
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>

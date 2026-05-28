@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import RichText from "./RichText"
 
 export default function ArticleCard({ post }) {
   const [buttonState, setButtonState] = useState("default")
@@ -19,7 +20,7 @@ export default function ArticleCard({ post }) {
     setButtonState("clicked")
     setTimeout(() => {
       router.push(`/articles/${post.slug}`)
-    }, 800)
+    }, 100)
   }
   return (
     <div
@@ -94,7 +95,7 @@ export default function ArticleCard({ post }) {
           margin: "0 0 24px 0",
         }}
       >
-        {post.content.split("\n\n")[0]}
+        <RichText content={post.content.split("\n\n")[0]} />
       </p>
       <div style={{ textAlign: "center", marginTop: "24px" }}>
         <span
