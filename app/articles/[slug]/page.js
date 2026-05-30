@@ -20,14 +20,25 @@ export default async function ArticlePage({ params, searchParams }) {
 
   return (
     <main
+      className="article-main"
       style={{
         maxWidth: "680px",
         margin: "0 auto",
         padding: "80px 24px",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .article-main { padding: 48px 20px !important; }
+          .article-back { margin-bottom: 32px !important; }
+          .article-title { font-size: 32px !important; }
+          .article-meta { margin-bottom: 32px !important; }
+        }
+      `}</style>
+
       <Link
         href="/"
+        className="article-back"
         style={{
           display: "inline-block",
           fontSize: "12px",
@@ -43,6 +54,7 @@ export default async function ArticlePage({ params, searchParams }) {
       </Link>
 
       <h1
+        className="article-title"
         style={{
           fontSize: "48px",
           fontWeight: "700",
@@ -83,6 +95,7 @@ export default async function ArticlePage({ params, searchParams }) {
       </div>
 
       <div
+        className="article-meta"
         style={{
           display: "flex",
           gap: "16px",

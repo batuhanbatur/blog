@@ -76,6 +76,7 @@ export default function ContactPage() {
 
   return (
     <main
+      className="contact-main"
       style={{
         maxWidth: "580px",
         margin: "0 auto",
@@ -83,7 +84,17 @@ export default function ContactPage() {
         fontFamily: "Satoshi, sans-serif",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .contact-main { padding: 48px 20px !important; }
+          .contact-title { font-size: 36px !important; }
+          .contact-card { padding: 20px !important; }
+          .contact-actions { flex-direction: column !important; align-items: flex-start !important; }
+        }
+      `}</style>
+
       <h1
+        className="contact-title"
         style={{
           fontSize: "48px",
           fontWeight: "800",
@@ -125,6 +136,7 @@ export default function ContactPage() {
         </div>
       ) : (
         <div
+          className="contact-card"
           style={{
             backgroundColor: "#CFCDD2",
             borderRadius: "8px",
@@ -156,7 +168,7 @@ export default function ContactPage() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder="reachMe@ifNeeded.com"
               style={inputStyle}
             />
           </div>
@@ -186,7 +198,10 @@ export default function ContactPage() {
             />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          <div
+            className="contact-actions"
+            style={{ display: "flex", alignItems: "center", gap: "24px" }}
+          >
             <button
               onClick={handleSubmit}
               style={{

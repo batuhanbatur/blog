@@ -54,7 +54,15 @@ export default function Navbar() {
           transition: "opacity 0.3s ease",
         }}
       >
-        <div style={{ width: "32px", height: "32px", flexShrink: 0 }}>
+        <a
+          href="/"
+          style={{
+            width: "32px",
+            height: "32px",
+            flexShrink: 0,
+            display: "block",
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -86,7 +94,7 @@ export default function Navbar() {
               <path d="M17.5 16 L27 24 L17.5 29" />
             </g>
           </svg>
-        </div>
+        </a>
 
         {!isMobile && (
           <ul

@@ -1,8 +1,9 @@
+import { unstable_noStore as noStore } from "next/cache"
 import { supabase } from "../lib/supabase"
 
-export const revalidate = 0
-
 export default async function ArchivePage() {
+  noStore()
+
   const { data: messages } = await supabase
     .from("daily_messages")
     .select("*")
@@ -10,6 +11,7 @@ export default async function ArchivePage() {
 
   return (
     <main
+      className="archive-main"
       style={{
         maxWidth: "680px",
         margin: "0 auto",
@@ -17,7 +19,17 @@ export default async function ArchivePage() {
         fontFamily: "Satoshi, sans-serif",
       }}
     >
+      <style>{`
+        @media (max-width: 768px) {
+          .archive-main { padding: 48px 20px !important; }
+          .archive-title { font-size: 36px !important; }
+          .archive-subtitle { margin-bottom: 40px !important; }
+          .archive-quote { font-size: 18px !important; }
+        }
+      `}</style>
+
       <h1
+        className="archive-title"
         style={{
           fontSize: "48px",
           fontWeight: "800",
@@ -31,6 +43,7 @@ export default async function ArchivePage() {
       </h1>
 
       <p
+        className="archive-subtitle"
         style={{
           fontSize: "14px",
           color: "#1D1D0C",
@@ -62,6 +75,7 @@ export default async function ArchivePage() {
               }}
             >
               <p
+                className="archive-quote"
                 style={{
                   fontSize: "22px",
                   fontWeight: "700",
