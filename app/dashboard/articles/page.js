@@ -43,6 +43,11 @@ export default function ArticlesDashboard() {
   const [selectedGif, setSelectedGif] = useState(null)
   const [gifSearching, setGifSearching] = useState(false)
 
+  const [classifying, setClassifying] = useState(false)
+  const [classificationResult, setClassificationResult] = useState(null)
+  const [classificationError, setClassificationError] = useState(null)
+  const [savingClassification, setSavingClassification] = useState(false)
+
   const textareaRef = useRef(null)
 
   const fetchArticles = async () => {
@@ -78,6 +83,7 @@ export default function ArticlesDashboard() {
     setToneTags("")
     setTopicTags("")
     setStatus("draft")
+    setClassificationResult(null)
     resetGifPanel()
     setView("editor")
   }
@@ -95,6 +101,15 @@ export default function ArticlesDashboard() {
     setToneTags((article.tone_tags || []).join(", "))
     setTopicTags((article.topic_tags || []).join(", "))
     setStatus(article.status || "draft")
+    setClassificationResult(
+      article.primary_topics?.length
+        ? {
+            primaryTopics: article.primary_topics,
+            secondaryTopics: article.secondary_topics,
+            collection: article.collection,
+          }
+        : null,
+    )
     resetGifPanel()
     setView("editor")
   }
@@ -123,7 +138,7 @@ export default function ArticlesDashboard() {
     setSelectedGif(null)
     try {
       const res = await fetch(
-        `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_GIPHY_API_KEY}&q=${encodeURIComponent(gifSearchQuery)}&limit=9&rating=g`
+        `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_GIPHY_API_KEY}&q=${encodeURIComponent(gifSearchQuery)}&limit=9&rating=g`,
       )
       const data = await res.json()
       setGiphyResults(data.data || [])
@@ -139,6 +154,65 @@ export default function ArticlesDashboard() {
     const start = textarea ? textarea.selectionStart : content.length
     setContent(content.slice(0, start) + marker + content.slice(start))
     resetGifPanel()
+  }
+
+  const handleClassify = async () => {
+    if (!title.trim() || !content.trim()) return
+    setClassifying(true)
+    setClassificationError(null)
+    try {
+      const { classifyArticle } = await import("../../lib/classifyArticle")
+      const result = await classifyArticle({ title, content })
+      setClassificationResult(result)
+    } catch (e) {
+      setClassificationError("Classification failed. Try again.")
+    } finally {
+      setClassifying(false)
+    }
+  }
+
+  const handleSaveClassification = async () => {
+    if (!classificationResult || !editingArticle) return
+    setSavingClassification(true)
+    try {
+      await supabase
+        .from("articles")
+        .update({
+          primary_topics: classificationResult.primaryTopics,
+          secondary_topics: classificationResult.secondaryTopics,
+          collection: classificationResult.collection,
+        })
+        .eq("id", editingArticle.id)
+
+      const { generateCollectionDescription } =
+        await import("../../lib/classifyArticle")
+      const { data: existingCollection } = await supabase
+        .from("collections")
+        .select("*")
+        .eq("name", classificationResult.collection)
+        .single()
+
+      if (!existingCollection) {
+        const { data: articlesInCollection } = await supabase
+          .from("articles")
+          .select("title")
+          .eq("collection", classificationResult.collection)
+          .limit(5)
+        const titles = articlesInCollection?.map(a => a.title) || [title]
+        const description = await generateCollectionDescription(
+          classificationResult.collection,
+          titles,
+        )
+        await supabase.from("collections").insert([
+          {
+            name: classificationResult.collection,
+            description,
+          },
+        ])
+      }
+    } finally {
+      setSavingClassification(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -533,13 +607,15 @@ export default function ArticlesDashboard() {
               </button>
 
               {showGifPanel && (
-                <div style={{
-                  marginTop: "12px",
-                  backgroundColor: "rgba(204, 198, 184, 0.03)",
-                  border: "1px solid rgba(204, 198, 184, 0.1)",
-                  borderRadius: "6px",
-                  padding: "16px",
-                }}>
+                <div
+                  style={{
+                    marginTop: "12px",
+                    backgroundColor: "rgba(204, 198, 184, 0.03)",
+                    border: "1px solid rgba(204, 198, 184, 0.1)",
+                    borderRadius: "6px",
+                    padding: "16px",
+                  }}
+                >
                   <div style={{ marginBottom: "12px" }}>
                     <label style={labelStyle}>Phrase</label>
                     <input
@@ -560,14 +636,25 @@ export default function ArticlesDashboard() {
                         onChange={e => setGifSearchQuery(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && searchGiphy()}
                       />
-                      <button onClick={searchGiphy} disabled={gifSearching} style={gifBtnStyle}>
+                      <button
+                        onClick={searchGiphy}
+                        disabled={gifSearching}
+                        style={gifBtnStyle}
+                      >
                         {gifSearching ? "..." : "Search"}
                       </button>
                     </div>
                   </div>
 
                   {giphyResults.length > 0 && (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: "8px",
+                        marginBottom: "12px",
+                      }}
+                    >
                       {giphyResults.map(gif => (
                         <div
                           key={gif.id}
@@ -576,12 +663,22 @@ export default function ArticlesDashboard() {
                             cursor: "pointer",
                             borderRadius: "4px",
                             overflow: "hidden",
-                            border: selectedGif?.id === gif.id ? "2px solid #CCC6B8" : "2px solid transparent",
-                            opacity: selectedGif && selectedGif.id !== gif.id ? 0.5 : 1,
+                            border:
+                              selectedGif?.id === gif.id
+                                ? "2px solid #CCC6B8"
+                                : "2px solid transparent",
+                            opacity:
+                              selectedGif && selectedGif.id !== gif.id
+                                ? 0.5
+                                : 1,
                             transition: "opacity 0.15s, border-color 0.15s",
                           }}
                         >
-                          <img src={gif.images.fixed_height.url} alt={gif.title} style={{ width: "100%", display: "block" }} />
+                          <img
+                            src={gif.images.fixed_height.url}
+                            alt={gif.title}
+                            style={{ width: "100%", display: "block" }}
+                          />
                         </div>
                       ))}
                     </div>
@@ -592,12 +689,159 @@ export default function ArticlesDashboard() {
                     disabled={!gifPhrase.trim() || !selectedGif}
                     style={{
                       ...gifBtnStyle,
-                      opacity: (!gifPhrase.trim() || !selectedGif) ? 0.3 : 0.9,
-                      cursor: (!gifPhrase.trim() || !selectedGif) ? "not-allowed" : "pointer",
+                      opacity: !gifPhrase.trim() || !selectedGif ? 0.3 : 0.9,
+                      cursor:
+                        !gifPhrase.trim() || !selectedGif
+                          ? "not-allowed"
+                          : "pointer",
                     }}
                   >
                     Insert at Cursor
                   </button>
+                </div>
+              )}
+            </div>
+
+            {/* AI Classification */}
+            <div
+              style={{
+                borderTop: "1px solid rgba(204, 198, 184, 0.1)",
+                paddingTop: "24px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "16px",
+                }}
+              >
+                <label style={labelStyle}>AI Classification</label>
+                <button
+                  onClick={handleClassify}
+                  disabled={classifying || !content.trim()}
+                  style={{
+                    ...gifBtnStyle,
+                    opacity: !content.trim() || classifying ? 0.3 : 0.9,
+                    cursor:
+                      !content.trim() || classifying
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
+                >
+                  {classifying ? "Classifying..." : "Classify with AI"}
+                </button>
+              </div>
+
+              {classificationError && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#ff6464",
+                    margin: "0 0 12px 0",
+                  }}
+                >
+                  {classificationError}
+                </p>
+              )}
+
+              {classificationResult && (
+                <div
+                  style={{
+                    backgroundColor: "rgba(204, 198, 184, 0.05)",
+                    border: "1px solid rgba(204, 198, 184, 0.1)",
+                    borderRadius: "6px",
+                    padding: "16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
+                  <div>
+                    <label style={labelStyle}>Collection</label>
+                    <input
+                      value={classificationResult.collection || ""}
+                      onChange={e =>
+                        setClassificationResult(r => ({
+                          ...r,
+                          collection: e.target.value,
+                        }))
+                      }
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Primary Topics</label>
+                    <input
+                      value={
+                        classificationResult._primaryTopicsRaw ??
+                        (classificationResult.primaryTopics || []).join(", ")
+                      }
+                      onChange={e =>
+                        setClassificationResult(r => ({
+                          ...r,
+                          _primaryTopicsRaw: e.target.value,
+                        }))
+                      }
+                      onBlur={e =>
+                        setClassificationResult(r => ({
+                          ...r,
+                          primaryTopics: e.target.value
+                            .split(",")
+                            .map(t => t.trim())
+                            .filter(Boolean),
+                        }))
+                      }
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Secondary Topics</label>
+                    <input
+                      value={
+                        classificationResult._secondaryTopicsRaw ??
+                        (classificationResult.secondaryTopics || []).join(", ")
+                      }
+                      onChange={e =>
+                        setClassificationResult(r => ({
+                          ...r,
+                          _secondaryTopicsRaw: e.target.value,
+                        }))
+                      }
+                      onBlur={e =>
+                        setClassificationResult(r => ({
+                          ...r,
+                          secondaryTopics: e.target.value
+                            .split(",")
+                            .map(t => t.trim())
+                            .filter(Boolean),
+                        }))
+                      }
+                      style={inputStyle}
+                    />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button
+                      onClick={handleSaveClassification}
+                      disabled={savingClassification || !editingArticle}
+                      style={{
+                        ...gifBtnStyle,
+                        opacity:
+                          savingClassification || !editingArticle ? 0.3 : 0.9,
+                        cursor:
+                          savingClassification || !editingArticle
+                            ? "not-allowed"
+                            : "pointer",
+                      }}
+                    >
+                      {savingClassification
+                        ? "Saving..."
+                        : !editingArticle
+                          ? "Save article first"
+                          : "Save Classification"}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

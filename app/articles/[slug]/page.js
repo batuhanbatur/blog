@@ -110,7 +110,7 @@ export default async function ArticlePage({ params, searchParams }) {
         </span>
       </div>
 
-      <ArticleBody content={post.content} shouldContinue={shouldContinue} />
+      <ArticleBody content={post.content} shouldContinue={shouldContinue} postId={post.id} />
     </main>
   )
 }

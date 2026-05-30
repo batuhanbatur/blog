@@ -1,8 +1,6 @@
-import ArticleCard from "./ArticleCard"
-import StatusUpdate from "./StatusUpdate"
-import SwordDivider from "./SwordDivider"
 import { supabase } from "../lib/supabase"
 import { unstable_noStore as noStore } from "next/cache"
+import TimelineClient from "./TimelineClient"
 
 export default async function Timeline() {
   noStore()
@@ -25,8 +23,6 @@ export default async function Timeline() {
     return new Date(b.created_at) - new Date(a.created_at)
   })
 
-  let statusCounter = 0
-
   return (
     <section
       className="tl-section"
@@ -34,49 +30,7 @@ export default async function Timeline() {
         padding: "16px 80px 64px 64px",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {allPosts.map((post, index) => {
-          const isLast = index === allPosts.length - 1
-
-          let item = null
-
-          if (post.type === "article") {
-            statusCounter = 0
-            item = <ArticleCard key={post.id} post={post} />
-          }
-
-          if (post.type === "status") {
-            const isRight = statusCounter % 2 !== 0
-            statusCounter++
-            item = (
-              <div
-                key={post.id}
-                className="tl-status-row"
-                style={{
-                  display: "flex",
-                  justifyContent: isRight ? "flex-end" : "flex-start",
-                }}
-              >
-                <div className="tl-status-card" style={{ width: "60%" }}>
-                  <StatusUpdate post={post} />
-                </div>
-              </div>
-            )
-          }
-
-          return (
-            <div key={post.id}>
-              <div style={{ padding: "48px 0" }}>{item}</div>
-              {!isLast && <SwordDivider />}
-            </div>
-          )
-        })}
-      </div>
+      <TimelineClient allPosts={allPosts} />
 
       <style>{`
         @media (max-width: 768px) {

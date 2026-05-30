@@ -2,9 +2,17 @@
 
 import { useEffect, useRef } from "react"
 import RichText from "./RichText"
+import { markAsRead } from "../lib/lastSeen"
 
-export default function ArticleBody({ content, shouldContinue }) {
+export default function ArticleBody({ content, shouldContinue, postId }) {
   const continueRef = useRef(null)
+
+  useEffect(() => {
+    if (postId) {
+      markAsRead(postId)
+      window.dispatchEvent(new Event("article-opened"))
+    }
+  }, [postId])
 
   useEffect(() => {
     if (!shouldContinue || !continueRef.current) return
