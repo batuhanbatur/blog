@@ -174,7 +174,7 @@ export default function Navbar() {
         <div
           style={{
             position: "fixed",
-            top: "55px",
+            top: "54px",
             left: 0,
             right: 0,
             backgroundColor: "#1D1D0C",

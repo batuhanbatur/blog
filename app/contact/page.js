@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { supabase } from "../lib/supabase"
 
 const inputStyle = {
   width: "100%",
@@ -34,14 +35,6 @@ const directLinkStyle = {
   textDecoration: "none",
 }
 
-const topics = [
-  { value: "general", label: "General" },
-  {
-    value: "article-tattoo",
-    label: "Article — How did my tattoo become one of my worst regrets?",
-  },
-]
-
 export default function ContactPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -49,6 +42,27 @@ export default function ContactPage() {
   const [message, setMessage] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
+  const [topics, setTopics] = useState([{ value: "general", label: "General" }])
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      const { data } = await supabase
+        .from("articles")
+        .select("slug, title")
+        .eq("status", "published")
+        .order("date", { ascending: false })
+      if (data) {
+        setTopics([
+          { value: "general", label: "General" },
+          ...data.map(a => ({
+            value: `article-${a.slug}`,
+            label: `Article — ${a.title}`,
+          }))
+        ])
+      }
+    }
+    fetchTopics()
+  }, [])
 
   const handleSubmit = async () => {
     if (!name.trim() || !email.trim() || !message.trim()) {
