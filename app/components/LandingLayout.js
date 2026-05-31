@@ -14,7 +14,7 @@ export default function LandingLayout({ quote, attribution }) {
 
   if (isMobile) {
     return (
-      <section style={{ padding: "40px 24px 48px" }}>
+      <section style={{ padding: "32px 24px 32px" }}>
         <h1
           style={{
             fontWeight: "800",
@@ -33,8 +33,8 @@ export default function LandingLayout({ quote, attribution }) {
 
         <div
           style={{
-            width: "200px",
-            margin: "0 auto 24px auto",
+            width: "160px",
+            margin: "0 auto 20px auto",
             lineHeight: 0,
           }}
         >
@@ -44,6 +44,9 @@ export default function LandingLayout({ quote, attribution }) {
             style={{
               width: "100%",
               height: "auto",
+              maxHeight: "220px",
+              objectFit: "cover",
+              objectPosition: "center top",
               display: "block",
               borderRadius: "4px",
             }}
@@ -55,7 +58,7 @@ export default function LandingLayout({ quote, attribution }) {
             fontSize: "14px",
             color: "#1D1D0C",
             opacity: 0.6,
-            margin: "0 0 40px 0",
+            margin: "0 0 24px 0",
             lineHeight: "1.6",
             fontFamily: "Satoshi, sans-serif",
             textAlign: "center",

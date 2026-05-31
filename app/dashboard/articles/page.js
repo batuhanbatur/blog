@@ -162,8 +162,19 @@ export default function ArticlesDashboard() {
     setClassificationError(null)
     try {
       const { classifyArticle } = await import("../../lib/classifyArticle")
-      const result = await classifyArticle({ title, content })
+      const { data: collectionsData } = await supabase.from("collections").select("name")
+      const existingCollections = collectionsData?.map(c => c.name) || []
+      const result = await classifyArticle({ title, content, existingCollections })
       setClassificationResult(result)
+      if (result.languageTag && (!languageTag || languageTag === "Mixed")) {
+        setLanguageTag(result.languageTag)
+      }
+      if (result.toneTags?.length && !toneTags.trim()) {
+        setToneTags(result.toneTags.join(", "))
+      }
+      if (result.readingTime && !readingTime.trim()) {
+        setReadingTime(result.readingTime)
+      }
     } catch (e) {
       setClassificationError("Classification failed. Try again.")
     } finally {
@@ -820,6 +831,24 @@ export default function ArticlesDashboard() {
                       }
                       style={inputStyle}
                     />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Language Tag (AI suggested)</label>
+                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
+                      Auto-filled in Language Tag field above if it was set to Mixed.
+                    </p>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Tone Tags (AI suggested)</label>
+                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
+                      Auto-filled in Tone Tags field above if it was empty.
+                    </p>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Reading Time (AI suggested)</label>
+                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
+                      Auto-filled in Reading Time field above if it was empty.
+                    </p>
                   </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button

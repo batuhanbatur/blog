@@ -18,6 +18,19 @@ export default async function ArticlePage({ params, searchParams }) {
     return <div>Article not found.</div>
   }
 
+  let relatedArticles = []
+  if (post.collection) {
+    const { data: candidates } = await supabase
+      .from("articles")
+      .select("id, title, slug, collection, reading_time")
+      .eq("status", "published")
+      .eq("collection", post.collection)
+      .neq("id", post.id)
+      .limit(3)
+
+    relatedArticles = candidates || []
+  }
+
   return (
     <main
       className="article-main"
@@ -110,7 +123,74 @@ export default async function ArticlePage({ params, searchParams }) {
         </span>
       </div>
 
-      <ArticleBody content={post.content} shouldContinue={shouldContinue} postId={post.id} />
+      <ArticleBody
+        content={post.content}
+        shouldContinue={shouldContinue}
+        postId={post.id}
+      />
+
+      {relatedArticles.length > 0 && (
+        <div
+          style={{
+            marginTop: "64px",
+            paddingTop: "32px",
+            borderTop: "1px solid rgba(29,29,12,0.08)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "11px",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color: "#1D1D0C",
+              opacity: 0.4,
+              margin: "0 0 24px 0",
+              fontFamily: "Satoshi, sans-serif",
+            }}
+          >
+            You may also like
+          </p>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            {relatedArticles.map(article => (
+              <Link
+                key={article.id}
+                href={`/articles/${article.slug}`}
+                style={{
+                  textDecoration: "none",
+                  color: "#1D1D0C",
+                  display: "block",
+                  padding: "16px 0",
+                  borderBottom: "1px solid rgba(29,29,12,0.06)",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: "600",
+                    margin: "0 0 4px 0",
+                    fontFamily: "Satoshi, sans-serif",
+                  }}
+                >
+                  {article.title}
+                </p>
+                <p
+                  style={{
+                    fontSize: "11px",
+                    opacity: 0.4,
+                    margin: 0,
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  {article.collection && `${article.collection} · `}
+                  {article.reading_time} read
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
