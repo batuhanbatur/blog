@@ -69,7 +69,7 @@ export default function LoginPage() {
             textAlign: "center",
           }}
         >
-          Dashboard
+          {"Well, hello stranger. Nah, just kidding. It's me. OPEN THE GATES!"}
         </h1>
 
         {error && (

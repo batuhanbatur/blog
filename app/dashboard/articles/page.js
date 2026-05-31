@@ -48,6 +48,9 @@ export default function ArticlesDashboard() {
   const [classificationError, setClassificationError] = useState(null)
   const [savingClassification, setSavingClassification] = useState(false)
 
+  const [generatingAudio, setGeneratingAudio] = useState(false)
+  const [audioError, setAudioError] = useState(null)
+
   const textareaRef = useRef(null)
 
   const fetchArticles = async () => {
@@ -162,19 +165,8 @@ export default function ArticlesDashboard() {
     setClassificationError(null)
     try {
       const { classifyArticle } = await import("../../lib/classifyArticle")
-      const { data: collectionsData } = await supabase.from("collections").select("name")
-      const existingCollections = collectionsData?.map(c => c.name) || []
-      const result = await classifyArticle({ title, content, existingCollections })
+      const result = await classifyArticle({ title, content })
       setClassificationResult(result)
-      if (result.languageTag && (!languageTag || languageTag === "Mixed")) {
-        setLanguageTag(result.languageTag)
-      }
-      if (result.toneTags?.length && !toneTags.trim()) {
-        setToneTags(result.toneTags.join(", "))
-      }
-      if (result.readingTime && !readingTime.trim()) {
-        setReadingTime(result.readingTime)
-      }
     } catch (e) {
       setClassificationError("Classification failed. Try again.")
     } finally {
@@ -223,6 +215,32 @@ export default function ArticlesDashboard() {
       }
     } finally {
       setSavingClassification(false)
+    }
+  }
+
+  const handleGenerateAudio = async () => {
+    if (!editingArticle || !content.trim()) return
+    setGeneratingAudio(true)
+    setAudioError(null)
+    try {
+      const res = await fetch("/api/generate-audio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content, slug }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to generate audio")
+
+      await supabase
+        .from("articles")
+        .update({ audio_url: data.url })
+        .eq("id", editingArticle.id)
+
+      setEditingArticle(prev => ({ ...prev, audio_url: data.url }))
+    } catch (e) {
+      setAudioError(e.message)
+    } finally {
+      setGeneratingAudio(false)
     }
   }
 
@@ -832,24 +850,6 @@ export default function ArticlesDashboard() {
                       style={inputStyle}
                     />
                   </div>
-                  <div>
-                    <label style={labelStyle}>Language Tag (AI suggested)</label>
-                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
-                      Auto-filled in Language Tag field above if it was set to Mixed.
-                    </p>
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Tone Tags (AI suggested)</label>
-                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
-                      Auto-filled in Tone Tags field above if it was empty.
-                    </p>
-                  </div>
-                  <div>
-                    <label style={labelStyle}>Reading Time (AI suggested)</label>
-                    <p style={{ fontSize: "12px", opacity: 0.5, margin: 0 }}>
-                      Auto-filled in Reading Time field above if it was empty.
-                    </p>
-                  </div>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
                       onClick={handleSaveClassification}
@@ -872,6 +872,81 @@ export default function ArticlesDashboard() {
                     </button>
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* Audio Generation */}
+            <div
+              style={{
+                borderTop: "1px solid rgba(204, 198, 184, 0.1)",
+                paddingTop: "24px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "16px",
+                }}
+              >
+                <div>
+                  <label style={labelStyle}>Audio</label>
+                  {editingArticle?.audio_url && (
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: "11px",
+                        opacity: 0.4,
+                      }}
+                    >
+                      Audio exists · regenerate to overwrite
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={handleGenerateAudio}
+                  disabled={
+                    generatingAudio || !editingArticle || !content.trim()
+                  }
+                  style={{
+                    ...gifBtnStyle,
+                    opacity:
+                      generatingAudio || !editingArticle || !content.trim()
+                        ? 0.3
+                        : 0.9,
+                    cursor:
+                      generatingAudio || !editingArticle || !content.trim()
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
+                >
+                  {generatingAudio
+                    ? "Generating..."
+                    : editingArticle?.audio_url
+                      ? "Regenerate Audio"
+                      : "Generate Audio"}
+                </button>
+              </div>
+
+              {audioError && (
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#ff6464",
+                    margin: "0 0 12px 0",
+                  }}
+                >
+                  {audioError}
+                </p>
+              )}
+
+              {editingArticle?.audio_url && (
+                <audio
+                  controls
+                  src={editingArticle.audio_url}
+                  style={{ width: "100%", opacity: 0.7 }}
+                />
               )}
             </div>
 

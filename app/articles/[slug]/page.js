@@ -112,7 +112,7 @@ export default async function ArticlePage({ params, searchParams }) {
         style={{
           display: "flex",
           gap: "16px",
-          marginBottom: "48px",
+          marginBottom: post.audio_url ? "24px" : "48px",
         }}
       >
         <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.4 }}>
@@ -122,6 +122,41 @@ export default async function ArticlePage({ params, searchParams }) {
           {post.reading_time} read
         </span>
       </div>
+
+      {post.audio_url && (
+        <div style={{ marginBottom: "48px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "8px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "9px",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#1D1D0C",
+                opacity: 0.4,
+                fontFamily: "Satoshi, sans-serif",
+              }}
+            >
+              Listen to this article
+            </span>
+          </div>
+          <audio
+            controls
+            src={post.audio_url}
+            style={{
+              width: "100%",
+              height: "36px",
+              opacity: 0.7,
+            }}
+          />
+        </div>
+      )}
 
       <ArticleBody
         content={post.content}

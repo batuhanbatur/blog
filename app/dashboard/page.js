@@ -58,7 +58,7 @@ export default function Dashboard() {
               margin: 0,
             }}
           >
-            Dashboard
+            {"Say something nice."}
           </h1>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <span
