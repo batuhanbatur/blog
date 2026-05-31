@@ -1,12 +1,11 @@
 import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
-import SurveyTrigger from "./components/SurveyTrigger";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
-  title: "the blog",
-  description: "a living reading platform",
+  title: "Batuhan Batur",
+  description: "A personal publishing platform by Batuhan Batur. Articles, status updates, and ideas. Organized by theme, built to last.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +14,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <NavbarWrapper />
         {children}
-        <SurveyTrigger />
         <Analytics />
         <SpeedInsights />
       </body>
