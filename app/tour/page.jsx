@@ -164,7 +164,7 @@ export default function TourPage() {
           style={img}
         />
         <p style={p}>
-          Article pages are intentionally simple. The title, tags, date, and reading time sit at the top. Below that, the content.
+          Article pages are intentionally simple. The title, tags, date, and reading time sit at the top. For articles with audio, a player appears just below. Each one is read aloud in my own voice, generated using a clone trained on my recordings. Below that, the content.
         </p>
         <p style={p}>
           But the content layer has more depth than it first appears. While writing, I can annotate any word or phrase using a custom inline syntax. There are three types: a word definition that displays a small card with an explanation and optional phonemic transcription, an article preview that surfaces a related piece with a <em>Check it out</em> / <em>No thanks</em> prompt, and a GIF popup connected to the text by a small SVG line. All three appear on hover without taking the reader away from the page.
