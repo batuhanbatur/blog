@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import RichText from "./RichText"
+import TagWithTooltip from "../components/TagWithTooltip"
 
 export default function ArticleCard({ post }) {
   const [buttonState, setButtonState] = useState("default")
@@ -51,23 +52,11 @@ export default function ArticleCard({ post }) {
           alignItems: "center",
         }}
       >
-        {[post.language_tag, ...(post.tone_tags || [])].map(tag => (
-          <span
-            key={tag}
-            style={{
-              fontSize: "9px",
-              marginTop: "10px",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#FFFFFF",
-              backgroundColor: "#4C495A",
-              padding: "2px 8px",
-              clipPath:
-                "polygon(6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px), 0% 6px)",
-            }}
-          >
-            {tag}
-          </span>
+        {[
+          { value: post.language_tag, label: "Language" },
+          ...(post.tone_tags || []).map(t => ({ value: t, label: "Tone" })),
+        ].map(({ value, label }) => (
+          <TagWithTooltip key={value} value={value} label={label} />
         ))}
       </div>
 
