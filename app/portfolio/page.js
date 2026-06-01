@@ -173,7 +173,7 @@ export default function PortfolioPage() {
       <div style={{
         maxWidth: "780px",
         margin: "0 auto",
-        padding: "80px 24px",
+        padding: "48px 24px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -184,18 +184,20 @@ export default function PortfolioPage() {
         <Image
           src="/BB-logo-glow.png"
           alt="BB Logo"
-          width={160}
-          height={160}
-          style={{ marginBottom: "16px" }}
+          width={220}
+          height={220}
+          style={{ marginBottom: "12px" }}
         />
 
         {/* Name */}
         <h1 style={{
-          fontSize: "28px",
+          fontSize: "22px",
           fontWeight: "700",
-          letterSpacing: "0.15em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
           margin: "0 0 12px 0",
+          marginTop: "-20px",
+          fontFamily: "Satoshi, sans-serif",
         }}>
           Batuhan Batur
         </h1>
