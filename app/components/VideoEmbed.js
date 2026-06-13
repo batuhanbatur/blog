@@ -2,17 +2,20 @@
 
 export default function VideoEmbed({ title, url }) {
   return (
-    <div style={{
-      width: "100%",
-      marginTop: "12px",
-      marginBottom: "4px",
-      borderRadius: "6px",
-      overflow: "hidden",
-      backgroundColor: "#1D1D0C",
-    }}>
+    <div
+      style={{
+        width: "100%",
+        marginTop: "12px",
+        marginBottom: "4px",
+        borderRadius: "6px",
+        overflow: "hidden",
+        backgroundColor: "#1D1D0C",
+      }}
+    >
       <video
         src={url}
         controls
+        controlsList="nodownload"
         playsInline
         style={{
           width: "100%",
