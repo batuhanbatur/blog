@@ -11,7 +11,7 @@ export default function StatusUpdate({ post }) {
         boxShadow: "2px 3px 0px rgba(29, 29, 12, 0.08)",
       }}
     >
-      <p
+      <div
         style={{
           fontSize: "15px",
           lineHeight: "1.6",
@@ -22,7 +22,7 @@ export default function StatusUpdate({ post }) {
         }}
       >
         <RichText content={post.content} />
-      </p>
+      </div>
       <span
         style={{
           fontSize: "11px",

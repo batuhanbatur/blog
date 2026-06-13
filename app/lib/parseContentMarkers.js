@@ -1,5 +1,5 @@
 export function parseContentMarkers(text) {
-  const regex = /\[([^\]]+)\]\((gif|article|word):([^)]+)\)/g
+  const regex = /\[([^\]]+)\]\((gif|article|word|video):([^)]+)\)/g
   const segments = []
   let lastIndex = 0
   let match
@@ -16,6 +16,8 @@ export function parseContentMarkers(text) {
     } else if (markerType === 'word') {
       const [explanation, phonemic] = value.split('|')
       segments.push({ type: 'word', phrase: match[1], explanation, phonemic: phonemic || null })
+    } else if (markerType === 'video') {
+      segments.push({ type: 'video', title: match[1], url: value })
     }
     lastIndex = match.index + match[0].length
   }

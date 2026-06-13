@@ -3,13 +3,14 @@
 import GifWord from "./GifWord"
 import ArticleWord from "./ArticleWord"
 import WordCard from "./WordCard"
+import VideoEmbed from "./VideoEmbed"
 import { parseContentMarkers } from "../lib/parseContentMarkers"
 
 export default function RichText({ content, style }) {
   const segments = parseContentMarkers(content)
 
   return (
-    <span style={style}>
+    <div style={style}>
       {segments.map((seg, i) =>
         seg.type === "gif" ? (
           <GifWord key={i} phrase={seg.phrase} gifUrl={seg.gifUrl} />
@@ -17,10 +18,12 @@ export default function RichText({ content, style }) {
           <ArticleWord key={i} phrase={seg.phrase} slug={seg.slug} />
         ) : seg.type === "word" ? (
           <WordCard key={i} phrase={seg.phrase} explanation={seg.explanation} phonemic={seg.phonemic} />
+        ) : seg.type === "video" ? (
+          <VideoEmbed key={i} title={seg.title} url={seg.url} />
         ) : (
           <span key={i}>{seg.content}</span>
         )
       )}
-    </span>
+    </div>
   )
 }
