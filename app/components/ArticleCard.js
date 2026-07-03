@@ -75,7 +75,7 @@ export default function ArticleCard({ post }) {
         </span>
       </div>
 
-      <p
+      <div
         style={{
           fontSize: "15px",
           lineHeight: "1.7",
@@ -85,7 +85,7 @@ export default function ArticleCard({ post }) {
         }}
       >
         <RichText content={post.content.split("\n\n")[0]} />
-      </p>
+      </div>
       <div style={{ textAlign: "center", marginTop: "24px" }}>
         <span
           onClick={handleClick}

@@ -44,13 +44,13 @@ export default function ArticleBody({ content, shouldContinue, postId }) {
       }}
     >
       {paragraphs.map((paragraph, index) => (
-        <p
+        <div
           key={index}
           ref={shouldContinue && index === 1 ? continueRef : null}
           style={{ marginBottom: "24px" }}
         >
           <RichText content={paragraph} />
-        </p>
+        </div>
       ))}
     </div>
   )

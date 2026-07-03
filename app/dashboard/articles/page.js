@@ -164,8 +164,13 @@ export default function ArticlesDashboard() {
     setClassifying(true)
     setClassificationError(null)
     try {
-      const { classifyArticle } = await import("../../lib/classifyArticle")
-      const result = await classifyArticle({ title, content })
+      const res = await fetch("/api/classify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      })
+      if (!res.ok) throw new Error("classification failed")
+      const result = await res.json()
       setClassificationResult(result)
     } catch (e) {
       setClassificationError("Classification failed. Try again.")
@@ -186,9 +191,6 @@ export default function ArticlesDashboard() {
           collection: classificationResult.collection,
         })
         .eq("id", editingArticle.id)
-
-      const { generateCollectionDescription } =
-        await import("../../lib/classifyArticle")
       const { data: existingCollection } = await supabase
         .from("collections")
         .select("*")
@@ -202,10 +204,15 @@ export default function ArticlesDashboard() {
           .eq("collection", classificationResult.collection)
           .limit(5)
         const titles = articlesInCollection?.map(a => a.title) || [title]
-        const description = await generateCollectionDescription(
-          classificationResult.collection,
-          titles,
-        )
+        const res = await fetch("/api/collection-description", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            collection: classificationResult.collection,
+            titles,
+          }),
+        })
+        const { description } = await res.json()
         await supabase.from("collections").insert([
           {
             name: classificationResult.collection,
@@ -213,6 +220,9 @@ export default function ArticlesDashboard() {
           },
         ])
       }
+    } catch (e) {
+      console.error("save classification failed:", e)
+      setClassificationError("Failed to save classification. Try again.")
     } finally {
       setSavingClassification(false)
     }
