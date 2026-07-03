@@ -1,4 +1,8 @@
-export async function classifyArticle({ title, content, existingCollections = [] }) {
+export async function classifyArticle({
+  title,
+  content,
+  existingCollections = [],
+}) {
   const prompt = `You are classifying a personal blog article for a knowledge graph system.
 
 Article title: ${title}
@@ -30,7 +34,7 @@ Rules:
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
@@ -48,7 +52,10 @@ Rules:
   }
 }
 
-export async function generateCollectionDescription(collectionName, sampleTitles) {
+export async function generateCollectionDescription(
+  collectionName,
+  sampleTitles,
+) {
   const prompt = `Write a single evocative sentence describing a collection of blog articles called "${collectionName}".
 Sample article titles from this collection: ${sampleTitles.join(", ")}.
 The sentence should feel personal and inviting, like an author describing their own writing.
@@ -59,7 +66,7 @@ Return ONLY the sentence, no quotes, no explanation.`
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-4o",
