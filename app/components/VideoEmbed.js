@@ -4,12 +4,10 @@ export default function VideoEmbed({ title, url, ambient }) {
   return (
     <div
       style={{
-        width: "100%",
         marginTop: "12px",
         marginBottom: "4px",
         borderRadius: "6px",
         overflow: "hidden",
-        backgroundColor: "#1D1D0C",
         display: "flex",
         justifyContent: "center",
       }}
@@ -21,6 +19,7 @@ export default function VideoEmbed({ title, url, ambient }) {
         muted={ambient}
         playsInline={ambient}
         controls={!ambient}
+        controlsList={!ambient ? "nodownload" : undefined}
         style={{
           display: "block",
           maxHeight: "400px",
