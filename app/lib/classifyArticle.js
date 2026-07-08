@@ -56,11 +56,11 @@ export async function generateCollectionDescription(
   collectionName,
   sampleTitles,
 ) {
-  const prompt = `Write a single evocative sentence describing a collection of blog articles called "${collectionName}".
-Sample article titles from this collection: ${sampleTitles.join(", ")}.
-The sentence should feel personal and inviting, like an author describing their own writing.
-Example: "Stories about games, characters, competition, and the memories attached to them."
-Return ONLY the sentence, no quotes, no explanation.`
+  const prompt = `Write a single plain sentence describing what the blog collection "${collectionName}" is about.
+Sample article titles: ${sampleTitles.join(", ")}.
+Keep it factual and neutral, like a library label. No metaphors, no drama, no quotes, no "journey".
+Example: "Articles about the process of building software and the lessons learned along the way."
+Return ONLY the sentence, no punctuation at the end, no explanation.`
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -71,7 +71,7 @@ Return ONLY the sentence, no quotes, no explanation.`
     body: JSON.stringify({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
+      temperature: 0.3,
     }),
   })
 
