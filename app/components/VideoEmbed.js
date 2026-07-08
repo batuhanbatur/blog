@@ -10,6 +10,8 @@ export default function VideoEmbed({ title, url, ambient }) {
         borderRadius: "6px",
         overflow: "hidden",
         backgroundColor: "#1D1D0C",
+        display: "flex",
+        justifyContent: "center",
       }}
     >
       <video
@@ -20,10 +22,9 @@ export default function VideoEmbed({ title, url, ambient }) {
         playsInline={ambient}
         controls={!ambient}
         style={{
-          width: "100%",
           display: "block",
           maxHeight: "400px",
-          objectFit: "contain",
+          borderRadius: "6px",
         }}
         aria-label={title}
       />
