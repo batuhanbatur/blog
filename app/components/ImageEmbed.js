@@ -15,8 +15,9 @@ export default function ImageEmbed({ alt, url }) {
         src={url}
         alt={alt}
         style={{
-          width: "100%",
           display: "block",
+          maxWidth: "60%",
+          borderRadius: "6px",
           objectFit: "contain",
         }}
       />
