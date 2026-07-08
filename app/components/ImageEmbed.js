@@ -4,7 +4,8 @@ export default function ImageEmbed({ alt, url }) {
   return (
     <div
       style={{
-        width: "100%",
+        display: "inline-block",
+        maxWidth: "60%",
         marginTop: "12px",
         marginBottom: "4px",
         borderRadius: "6px",
@@ -16,7 +17,7 @@ export default function ImageEmbed({ alt, url }) {
         alt={alt}
         style={{
           display: "block",
-          maxWidth: "60%",
+          width: "100%",
           borderRadius: "6px",
           objectFit: "contain",
         }}
