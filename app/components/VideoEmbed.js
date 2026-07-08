@@ -1,6 +1,6 @@
 "use client"
 
-export default function VideoEmbed({ title, url }) {
+export default function VideoEmbed({ title, url, ambient }) {
   return (
     <div
       style={{
@@ -14,9 +14,11 @@ export default function VideoEmbed({ title, url }) {
     >
       <video
         src={url}
-        controls
-        controlsList="nodownload"
-        playsInline
+        autoPlay={ambient}
+        loop={ambient}
+        muted={ambient}
+        playsInline={ambient}
+        controls={!ambient}
         style={{
           width: "100%",
           display: "block",
