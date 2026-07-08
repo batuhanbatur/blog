@@ -1,5 +1,6 @@
 export function parseContentMarkers(text) {
-  const regex = /\[([^\]]+)\]\((gif|article|word|video|ambient):([^)]+)\)/g
+  const regex =
+    /\[([^\]]+)\]\((gif|article|word|video|ambient|image):([^)]+)\)/g
   const segments = []
   let lastIndex = 0
   let match
@@ -38,6 +39,8 @@ export function parseContentMarkers(text) {
         url: value,
         ambient: true,
       })
+    } else if (markerType === "image") {
+      segments.push({ type: "image", alt: match[1], url: value })
     }
     lastIndex = match.index + match[0].length
   }

@@ -4,6 +4,7 @@ import GifWord from "./GifWord"
 import ArticleWord from "./ArticleWord"
 import WordCard from "./WordCard"
 import VideoEmbed from "./VideoEmbed"
+import ImageEmbed from "./ImageEmbed"
 import { parseContentMarkers } from "../lib/parseContentMarkers"
 
 export default function RichText({ content, style }) {
@@ -17,12 +18,24 @@ export default function RichText({ content, style }) {
         ) : seg.type === "article" ? (
           <ArticleWord key={i} phrase={seg.phrase} slug={seg.slug} />
         ) : seg.type === "word" ? (
-          <WordCard key={i} phrase={seg.phrase} explanation={seg.explanation} phonemic={seg.phonemic} />
+          <WordCard
+            key={i}
+            phrase={seg.phrase}
+            explanation={seg.explanation}
+            phonemic={seg.phonemic}
+          />
         ) : seg.type === "video" ? (
-          <VideoEmbed key={i} title={seg.title} url={seg.url} />
+          <VideoEmbed
+            key={i}
+            title={seg.title}
+            url={seg.url}
+            ambient={seg.ambient}
+          />
+        ) : seg.type === "image" ? (
+          <ImageEmbed key={i} alt={seg.alt} url={seg.url} />
         ) : (
           <span key={i}>{seg.content}</span>
-        )
+        ),
       )}
     </div>
   )
