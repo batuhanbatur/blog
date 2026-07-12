@@ -21,9 +21,9 @@ const projects = [
     description: "An imaginary pizza brand with a few unusual ideas.",
     image: "/pizza-god-logo.png",
     links: {
-      tour: null,
-      live: null,
-      github: null,
+      tour: null, // tour article pending
+      live: "https://pizza-god.batuhanbatur.com",
+      github: "https://github.com/batuhanbatur/pizza-god",
     },
   },
 ]
@@ -43,7 +43,9 @@ function ProjectCard({ project }) {
         overflow: "hidden",
         cursor: "default",
         transition: "border-color 0.2s",
-        borderColor: hovered ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.08)",
+        borderColor: hovered
+          ? "rgba(255,255,255,0.2)"
+          : "rgba(255,255,255,0.08)",
       }}
     >
       {/* Card image area */}
@@ -91,11 +93,23 @@ function ProjectCard({ project }) {
               padding: "24px",
             }}
           >
-            {project.links.tour && <LinkBtn href={project.links.tour}>Guided Tour</LinkBtn>}
-            {project.links.live && <LinkBtn href={project.links.live}>Live Site</LinkBtn>}
-            {project.links.github && <LinkBtn href={project.links.github}>GitHub</LinkBtn>}
+            {project.links.tour && (
+              <LinkBtn href={project.links.tour}>Guided Tour</LinkBtn>
+            )}
+            {project.links.live && (
+              <LinkBtn href={project.links.live}>Live Site</LinkBtn>
+            )}
+            {project.links.github && (
+              <LinkBtn href={project.links.github}>GitHub</LinkBtn>
+            )}
             {!project.links.live && !project.links.github && (
-              <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em" }}>
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "0.1em",
+                }}
+              >
                 COMING SOON
               </span>
             )}
@@ -105,23 +119,27 @@ function ProjectCard({ project }) {
 
       {/* Card footer */}
       <div style={{ padding: "16px 20px" }}>
-        <p style={{
-          fontSize: "13px",
-          fontWeight: "700",
-          letterSpacing: "0.1em",
-          color: "#FFFFFF",
-          margin: "0 0 6px 0",
-          fontFamily: "Satoshi, sans-serif",
-        }}>
+        <p
+          style={{
+            fontSize: "13px",
+            fontWeight: "700",
+            letterSpacing: "0.1em",
+            color: "#FFFFFF",
+            margin: "0 0 6px 0",
+            fontFamily: "Satoshi, sans-serif",
+          }}
+        >
           {project.name}
         </p>
-        <p style={{
-          fontSize: "13px",
-          color: "rgba(255,255,255,0.45)",
-          margin: 0,
-          lineHeight: "1.5",
-          fontFamily: "Satoshi, sans-serif",
-        }}>
+        <p
+          style={{
+            fontSize: "13px",
+            color: "rgba(255,255,255,0.45)",
+            margin: 0,
+            lineHeight: "1.5",
+            fontFamily: "Satoshi, sans-serif",
+          }}
+        >
           {project.description}
         </p>
       </div>
@@ -162,24 +180,27 @@ function LinkBtn({ href, children }) {
 
 export default function PortfolioPage() {
   return (
-    <main style={{
-      minHeight: "100vh",
-      backgroundColor: "#000000",
-      color: "#FFFFFF",
-      fontFamily: "Satoshi, sans-serif",
-      overscrollBehavior: "none",
-    }}>
-      <style>{'html, body { background: #000; }'}</style>
-      <div style={{
-        maxWidth: "780px",
-        margin: "0 auto",
-        padding: "48px 24px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-      }}>
-
+    <main
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#000000",
+        color: "#FFFFFF",
+        fontFamily: "Satoshi, sans-serif",
+        overscrollBehavior: "none",
+      }}
+    >
+      <style>{"html, body { background: #000; }"}</style>
+      <div
+        style={{
+          maxWidth: "780px",
+          margin: "0 auto",
+          padding: "48px 24px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
         {/* Logo */}
         <Image
           src="/BB-logo-glow.png"
@@ -190,75 +211,107 @@ export default function PortfolioPage() {
         />
 
         {/* Name */}
-        <h1 style={{
-          fontSize: "22px",
-          fontWeight: "700",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          margin: "0 0 12px 0",
-          marginTop: "-20px",
-          fontFamily: "Satoshi, sans-serif",
-        }}>
+        <h1
+          style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            margin: "0 0 12px 0",
+            marginTop: "-20px",
+            fontFamily: "Satoshi, sans-serif",
+          }}
+        >
           Batuhan Batur
         </h1>
 
         {/* Title */}
-        <p style={{
-          fontSize: "14px",
-          color: "rgba(255,255,255,0.5)",
-          letterSpacing: "0.05em",
-          margin: "0 0 32px 0",
-        }}>
+        <p
+          style={{
+            fontSize: "14px",
+            color: "rgba(255,255,255,0.5)",
+            letterSpacing: "0.05em",
+            margin: "0 0 32px 0",
+          }}
+        >
           Frontend Developer focused on UI/UX and product thinking.
         </p>
 
         {/* Bio */}
-        <p style={{
-          fontSize: "15px",
-          lineHeight: "1.8",
-          color: "rgba(255,255,255,0.65)",
-          maxWidth: "520px",
-          margin: "0 0 48px 0",
-        }}>
-          Linguistics graduate. Seven years at Apple. Now a developer.
-          For a long time, these felt like separate parts of my life.
-          Eventually, the pieces started to connect.
+        <p
+          style={{
+            fontSize: "15px",
+            lineHeight: "1.8",
+            color: "rgba(255,255,255,0.65)",
+            maxWidth: "520px",
+            margin: "0 0 48px 0",
+          }}
+        >
+          Linguistics graduate. Seven years at Apple. Now a developer. For a
+          long time, these felt like separate parts of my life. Eventually, the
+          pieces started to connect.
         </p>
 
         {/* Projects divider */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-          width: "100%",
-          marginBottom: "40px",
-        }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.1)" }} />
-          <span style={{
-            fontSize: "10px",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.3)",
-          }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            width: "100%",
+            marginBottom: "40px",
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: "1px",
+              backgroundColor: "rgba(255,255,255,0.1)",
+            }}
+          />
+          <span
+            style={{
+              fontSize: "10px",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.3)",
+            }}
+          >
             Projects
           </span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.1)" }} />
+          <div
+            style={{
+              flex: 1,
+              height: "1px",
+              backgroundColor: "rgba(255,255,255,0.1)",
+            }}
+          />
         </div>
 
         {/* Project cards */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "24px",
-          width: "100%",
-        }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "24px",
+            width: "100%",
+          }}
+        >
           {projects.map(project => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
 
         {/* Buttons */}
-        <div style={{ display: "flex", flexDirection: "row", gap: "12px", marginTop: "48px", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "12px",
+            marginTop: "48px",
+            alignItems: "center",
+          }}
+        >
           <a
             href="/cv.pdf"
             download
@@ -302,7 +355,6 @@ export default function PortfolioPage() {
             Contact
           </a>
         </div>
-
       </div>
     </main>
   )
