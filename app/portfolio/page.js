@@ -21,7 +21,7 @@ const projects = [
     description: "An imaginary pizza brand with a few unusual ideas.",
     image: "/pizza-god-logo.png",
     links: {
-      tour: null, // tour article pending
+      tour: "https://batuhanbatur.com/tour/pizza-god",
       live: "https://pizza-god.batuhanbatur.com",
       github: "https://github.com/batuhanbatur/pizza-god",
     },
