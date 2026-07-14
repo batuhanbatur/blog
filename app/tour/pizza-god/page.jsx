@@ -3,24 +3,25 @@ const media = {
   height: "auto",
   display: "block",
   borderRadius: "6px",
-  border: "1px solid rgba(255,255,255,0.1)",
-  boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(29,29,12,0.1)",
+  boxShadow: "0 2px 20px rgba(0,0,0,0.07)",
 }
 
 const h2 = {
   fontSize: "22px",
   fontWeight: "700",
   fontFamily: "Satoshi, sans-serif",
-  color: "#FFFFFF",
+  color: "#1D1D0C",
   margin: 0,
 }
 
 const p = {
   fontSize: "16px",
   lineHeight: "1.85",
-  color: "rgba(255,255,255,0.75)",
+  color: "#1D1D0C",
   margin: 0,
   fontFamily: "Satoshi, sans-serif",
+  opacity: 0.85,
 }
 
 const section = {
@@ -30,7 +31,7 @@ const section = {
 }
 
 const link = {
-  color: "#FFFFFF",
+  color: "#1D1D0C",
   textDecoration: "underline",
   textUnderlineOffset: "3px",
 }
@@ -62,11 +63,11 @@ export default function PizzaGodTourPage() {
         margin: "0 auto",
         padding: "80px 24px 120px 24px",
         fontFamily: "Satoshi, sans-serif",
-        backgroundColor: "#0a0a0a",
+        backgroundColor: "#CCC6B8",
       }}
     >
       <style>{`
-        html, body { background: #0a0a0a; }
+        html, body { background: #CCC6B8; }
         @media (max-width: 768px) {
           .tour-main { padding: 48px 20px 80px 20px !important; }
         }
@@ -74,7 +75,7 @@ export default function PizzaGodTourPage() {
 
       {/* Opening */}
       <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "80px" }}>
-        <p style={{ ...p, fontSize: "17px", color: "#FFFFFF" }}>
+        <p style={{ ...p, fontSize: "17px", opacity: 1 }}>
           Pizza God is a pizza ordering app for a restaurant that does not exist. That was intentional. I wanted to prove to myself that I could create a brand from nothing, give it an identity, and then build the product that identity deserves. This is a tour of the decisions behind it.
         </p>
         <p style={p}>
@@ -89,7 +90,7 @@ export default function PizzaGodTourPage() {
         </p>
       </div>
 
-      <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.1)", marginBottom: "80px" }} />
+      <div style={{ height: "1px", backgroundColor: "rgba(29,29,12,0.1)", marginBottom: "80px" }} />
 
       {/* Creating the brand */}
       <div style={{ ...section, marginBottom: "80px" }}>
