@@ -7,6 +7,22 @@ const media = {
   boxShadow: "0 2px 20px rgba(0,0,0,0.07)",
 }
 
+const videoWrap = {
+  display: "flex",
+  justifyContent: "center",
+  borderRadius: "6px",
+  overflow: "hidden",
+}
+
+const video = {
+  display: "block",
+  maxHeight: "400px",
+  maxWidth: "100%",
+  borderRadius: "6px",
+  border: "1px solid rgba(29,29,12,0.1)",
+  boxShadow: "0 2px 20px rgba(0,0,0,0.07)",
+}
+
 const h2 = {
   fontSize: "22px",
   fontWeight: "700",
@@ -38,15 +54,17 @@ const link = {
 
 function AmbientVideo({ src, title }) {
   return (
-    <video
-      src={src}
-      autoPlay
-      loop
-      muted
-      playsInline
-      aria-label={title}
-      style={media}
-    />
+    <div style={videoWrap}>
+      <video
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+        aria-label={title}
+        style={video}
+      />
+    </div>
   )
 }
 
