@@ -25,6 +25,8 @@ export default function StatusDashboard() {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
   const [tag, setTag] = useState("")
   const [newTag, setNewTag] = useState("")
+  const [suggesting, setSuggesting] = useState(false)
+  const [noMatch, setNoMatch] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
 
@@ -63,6 +65,7 @@ export default function StatusDashboard() {
     setDate(new Date().toISOString().split("T")[0])
     setTag("")
     setNewTag("")
+    setNoMatch(false)
     resetGifPanel()
     setView("editor")
   }
@@ -73,6 +76,7 @@ export default function StatusDashboard() {
     setDate(update.date)
     setTag(update.tag || "")
     setNewTag("")
+    setNoMatch(false)
     resetGifPanel()
     setView("editor")
   }
@@ -105,6 +109,30 @@ export default function StatusDashboard() {
     const start = textarea ? textarea.selectionStart : content.length
     setContent(content.slice(0, start) + marker + content.slice(start))
     resetGifPanel()
+  }
+
+  const suggestTag = async () => {
+    if (!content.trim() || existingTags.length === 0) return
+    setNoMatch(false)
+    setSuggesting(true)
+    try {
+      const res = await fetch("/api/suggest-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content, existingTags }),
+      })
+      const data = await res.json()
+      if (existingTags.includes(data.tag)) {
+        setTag(data.tag)
+      } else {
+        setNoMatch(true)
+        setTimeout(() => setNoMatch(false), 2000)
+      }
+    } catch (err) {
+      console.error("suggest tag failed:", err)
+    } finally {
+      setSuggesting(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -403,6 +431,22 @@ export default function StatusDashboard() {
                     </button>
                   )
                 })}
+                {existingTags.length > 0 && (
+                  <button
+                    onClick={suggestTag}
+                    disabled={suggesting || !content.trim()}
+                    style={{
+                      ...gifBtnStyle,
+                      opacity: suggesting || !content.trim() ? 0.4 : 0.7,
+                      cursor:
+                        suggesting || !content.trim()
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    {suggesting ? "..." : noMatch ? "No match" : "Suggest"}
+                  </button>
+                )}
               </div>
               <div style={{ display: "flex", gap: "8px" }}>
                 <input
