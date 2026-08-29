@@ -56,7 +56,7 @@ export default function ArticleCard({ post }) {
           { value: post.language_tag, label: "Language" },
           ...(post.tone_tags || []).map(t => ({ value: t, label: "Tone" })),
         ].map(({ value, label }) => (
-          <TagWithTooltip key={value} value={value} label={label} />
+          <TagWithTooltip key={`${label}:${value}`} value={value} label={label} />
         ))}
       </div>
 

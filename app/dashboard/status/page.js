@@ -23,6 +23,8 @@ export default function StatusDashboard() {
   const [editingUpdate, setEditingUpdate] = useState(null)
   const [content, setContent] = useState("")
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
+  const [tag, setTag] = useState("")
+  const [newTag, setNewTag] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
 
@@ -59,6 +61,8 @@ export default function StatusDashboard() {
     setEditingUpdate(null)
     setContent("")
     setDate(new Date().toISOString().split("T")[0])
+    setTag("")
+    setNewTag("")
     resetGifPanel()
     setView("editor")
   }
@@ -67,6 +71,8 @@ export default function StatusDashboard() {
     setEditingUpdate(update)
     setContent(update.content)
     setDate(update.date)
+    setTag(update.tag || "")
+    setNewTag("")
     resetGifPanel()
     setView("editor")
   }
@@ -83,7 +89,7 @@ export default function StatusDashboard() {
     setSelectedGif(null)
     try {
       const res = await fetch(
-        `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_GIPHY_API_KEY}&q=${encodeURIComponent(gifSearchQuery)}&limit=9&rating=g`
+        `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_GIPHY_API_KEY}&q=${encodeURIComponent(gifSearchQuery)}&limit=9&rating=g`,
       )
       const data = await res.json()
       setGiphyResults(data.data || [])
@@ -108,10 +114,12 @@ export default function StatusDashboard() {
     }
 
     if (editingUpdate) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("status_updates")
-        .update({ content: content.trim(), date })
+        .update({ content: content.trim(), date, tag: tag || null })
         .eq("id", editingUpdate.id)
+        .select()
+      console.log("update result:", data, "error:", error, "tag state:", tag)
       if (error) {
         setError(error.message)
         return
@@ -119,7 +127,7 @@ export default function StatusDashboard() {
     } else {
       const { error } = await supabase
         .from("status_updates")
-        .insert([{ content: content.trim(), date }])
+        .insert([{ content: content.trim(), date, tag: tag || null }])
       if (error) {
         setError(error.message)
         return
@@ -156,6 +164,8 @@ export default function StatusDashboard() {
     marginBottom: "6px",
     display: "block",
   }
+
+  const existingTags = [...new Set(updates.map(u => u.tag).filter(Boolean))]
 
   return (
     <main
@@ -364,6 +374,77 @@ export default function StatusDashboard() {
               />
             </div>
 
+            {/* Tag */}
+            <div>
+              <label style={labelStyle}>Tag</label>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                  marginBottom: "12px",
+                }}
+              >
+                {existingTags.map(t => {
+                  const selected = tag === t
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => setTag(selected ? "" : t)}
+                      style={{
+                        ...gifBtnStyle,
+                        textTransform: "none",
+                        ...(selected
+                          ? { backgroundColor: "#CCC6B8", color: "#1D1D0C" }
+                          : {}),
+                      }}
+                    >
+                      {t}
+                    </button>
+                  )
+                })}
+              </div>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  style={inputStyle}
+                  placeholder="New tag, e.g. PENTAKILL"
+                  value={newTag}
+                  onChange={e => setNewTag(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && newTag.trim()) {
+                      setTag(newTag.trim())
+                      setNewTag("")
+                    }
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    setTag(newTag.trim())
+                    setNewTag("")
+                  }}
+                  disabled={!newTag.trim()}
+                  style={{
+                    ...gifBtnStyle,
+                    opacity: !newTag.trim() ? 0.3 : 1,
+                    cursor: !newTag.trim() ? "not-allowed" : "pointer",
+                  }}
+                >
+                  Set
+                </button>
+              </div>
+              {tag && !existingTags.includes(tag) && (
+                <p
+                  style={{
+                    margin: "8px 0 0 0",
+                    fontSize: "11px",
+                    opacity: 0.4,
+                  }}
+                >
+                  New tag: {tag}
+                </p>
+              )}
+            </div>
+
             {/* Add GIF Panel */}
             <div>
               <button
@@ -374,13 +455,15 @@ export default function StatusDashboard() {
               </button>
 
               {showGifPanel && (
-                <div style={{
-                  marginTop: "12px",
-                  backgroundColor: "rgba(204, 198, 184, 0.03)",
-                  border: "1px solid rgba(204, 198, 184, 0.1)",
-                  borderRadius: "6px",
-                  padding: "16px",
-                }}>
+                <div
+                  style={{
+                    marginTop: "12px",
+                    backgroundColor: "rgba(204, 198, 184, 0.03)",
+                    border: "1px solid rgba(204, 198, 184, 0.1)",
+                    borderRadius: "6px",
+                    padding: "16px",
+                  }}
+                >
                   <div style={{ marginBottom: "12px" }}>
                     <label style={labelStyle}>Phrase</label>
                     <input
@@ -401,14 +484,25 @@ export default function StatusDashboard() {
                         onChange={e => setGifSearchQuery(e.target.value)}
                         onKeyDown={e => e.key === "Enter" && searchGiphy()}
                       />
-                      <button onClick={searchGiphy} disabled={gifSearching} style={gifBtnStyle}>
+                      <button
+                        onClick={searchGiphy}
+                        disabled={gifSearching}
+                        style={gifBtnStyle}
+                      >
                         {gifSearching ? "..." : "Search"}
                       </button>
                     </div>
                   </div>
 
                   {giphyResults.length > 0 && (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", marginBottom: "12px" }}>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                        gap: "8px",
+                        marginBottom: "12px",
+                      }}
+                    >
                       {giphyResults.map(gif => (
                         <div
                           key={gif.id}
@@ -417,12 +511,22 @@ export default function StatusDashboard() {
                             cursor: "pointer",
                             borderRadius: "4px",
                             overflow: "hidden",
-                            border: selectedGif?.id === gif.id ? "2px solid #CCC6B8" : "2px solid transparent",
-                            opacity: selectedGif && selectedGif.id !== gif.id ? 0.5 : 1,
+                            border:
+                              selectedGif?.id === gif.id
+                                ? "2px solid #CCC6B8"
+                                : "2px solid transparent",
+                            opacity:
+                              selectedGif && selectedGif.id !== gif.id
+                                ? 0.5
+                                : 1,
                             transition: "opacity 0.15s, border-color 0.15s",
                           }}
                         >
-                          <img src={gif.images.fixed_height.url} alt={gif.title} style={{ width: "100%", display: "block" }} />
+                          <img
+                            src={gif.images.fixed_height.url}
+                            alt={gif.title}
+                            style={{ width: "100%", display: "block" }}
+                          />
                         </div>
                       ))}
                     </div>
@@ -433,8 +537,11 @@ export default function StatusDashboard() {
                     disabled={!gifPhrase.trim() || !selectedGif}
                     style={{
                       ...gifBtnStyle,
-                      opacity: (!gifPhrase.trim() || !selectedGif) ? 0.3 : 0.9,
-                      cursor: (!gifPhrase.trim() || !selectedGif) ? "not-allowed" : "pointer",
+                      opacity: !gifPhrase.trim() || !selectedGif ? 0.3 : 0.9,
+                      cursor:
+                        !gifPhrase.trim() || !selectedGif
+                          ? "not-allowed"
+                          : "pointer",
                     }}
                   >
                     Insert at Cursor
