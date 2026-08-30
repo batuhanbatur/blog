@@ -23,7 +23,7 @@ export default function StatusDashboard() {
   const [editingUpdate, setEditingUpdate] = useState(null)
   const [content, setContent] = useState("")
   const [date, setDate] = useState(new Date().toISOString().split("T")[0])
-  const [tag, setTag] = useState("")
+  const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState("")
   const [suggesting, setSuggesting] = useState(false)
   const [noMatch, setNoMatch] = useState(false)
@@ -63,7 +63,7 @@ export default function StatusDashboard() {
     setEditingUpdate(null)
     setContent("")
     setDate(new Date().toISOString().split("T")[0])
-    setTag("")
+    setTags([])
     setNewTag("")
     setNoMatch(false)
     resetGifPanel()
@@ -74,7 +74,7 @@ export default function StatusDashboard() {
     setEditingUpdate(update)
     setContent(update.content)
     setDate(update.date)
-    setTag(update.tag || "")
+    setTags(update.tags || [])
     setNewTag("")
     setNoMatch(false)
     resetGifPanel()
@@ -122,8 +122,9 @@ export default function StatusDashboard() {
         body: JSON.stringify({ content, existingTags }),
       })
       const data = await res.json()
-      if (existingTags.includes(data.tag)) {
-        setTag(data.tag)
+      const valid = (data.tags || []).filter(t => existingTags.includes(t))
+      if (valid.length > 0) {
+        setTags(prev => [...new Set([...prev, ...valid])])
       } else {
         setNoMatch(true)
         setTimeout(() => setNoMatch(false), 2000)
@@ -144,10 +145,10 @@ export default function StatusDashboard() {
     if (editingUpdate) {
       const { data, error } = await supabase
         .from("status_updates")
-        .update({ content: content.trim(), date, tag: tag || null })
+        .update({ content: content.trim(), date, tags })
         .eq("id", editingUpdate.id)
         .select()
-      console.log("update result:", data, "error:", error, "tag state:", tag)
+      console.log("update result:", data, "error:", error, "tags state:", tags)
       if (error) {
         setError(error.message)
         return
@@ -155,7 +156,7 @@ export default function StatusDashboard() {
     } else {
       const { error } = await supabase
         .from("status_updates")
-        .insert([{ content: content.trim(), date, tag: tag || null }])
+        .insert([{ content: content.trim(), date, tags }])
       if (error) {
         setError(error.message)
         return
@@ -193,7 +194,7 @@ export default function StatusDashboard() {
     display: "block",
   }
 
-  const existingTags = [...new Set(updates.map(u => u.tag).filter(Boolean))]
+  const existingTags = [...new Set(updates.flatMap(u => u.tags || []))]
 
   return (
     <main
@@ -414,11 +415,17 @@ export default function StatusDashboard() {
                 }}
               >
                 {existingTags.map(t => {
-                  const selected = tag === t
+                  const selected = tags.includes(t)
                   return (
                     <button
                       key={t}
-                      onClick={() => setTag(selected ? "" : t)}
+                      onClick={() =>
+                        setTags(
+                          selected
+                            ? tags.filter(x => x !== t)
+                            : [...tags, t]
+                        )
+                      }
                       style={{
                         ...gifBtnStyle,
                         textTransform: "none",
@@ -456,14 +463,18 @@ export default function StatusDashboard() {
                   onChange={e => setNewTag(e.target.value)}
                   onKeyDown={e => {
                     if (e.key === "Enter" && newTag.trim()) {
-                      setTag(newTag.trim())
+                      const t = newTag.trim()
+                      setTags(prev =>
+                        prev.includes(t) ? prev : [...prev, t]
+                      )
                       setNewTag("")
                     }
                   }}
                 />
                 <button
                   onClick={() => {
-                    setTag(newTag.trim())
+                    const t = newTag.trim()
+                    setTags(prev => (prev.includes(t) ? prev : [...prev, t]))
                     setNewTag("")
                   }}
                   disabled={!newTag.trim()}
@@ -476,7 +487,7 @@ export default function StatusDashboard() {
                   Set
                 </button>
               </div>
-              {tag && !existingTags.includes(tag) && (
+              {tags.filter(t => !existingTags.includes(t)).length > 0 && (
                 <p
                   style={{
                     margin: "8px 0 0 0",
@@ -484,7 +495,8 @@ export default function StatusDashboard() {
                     opacity: 0.4,
                   }}
                 >
-                  New tag: {tag}
+                  New tag:{" "}
+                  {tags.filter(t => !existingTags.includes(t)).join(", ")}
                 </p>
               )}
             </div>

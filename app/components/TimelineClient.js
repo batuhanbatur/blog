@@ -22,15 +22,14 @@ export default function TimelineClient({ allPosts }) {
 
   const tags = [
     ...new Set(
-      allPosts
-        .filter(p => p.type === "status")
-        .map(p => p.tag)
-        .filter(Boolean)
+      allPosts.filter(p => p.type === "status").flatMap(p => p.tags || [])
     ),
   ]
 
   const visiblePosts = activeTag
-    ? allPosts.filter(p => p.type === "status" && p.tag === activeTag)
+    ? allPosts.filter(
+        p => p.type === "status" && (p.tags || []).includes(activeTag)
+      )
     : allPosts
 
   const pillStyle = active => ({

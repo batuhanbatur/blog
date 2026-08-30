@@ -10,9 +10,9 @@ export async function POST(request) {
     return Response.json({ error: "Invalid input" }, { status: 400 })
   }
 
-  const systemPrompt = `You assign a tag to a short blog status update. Pick the single best matching tag from this list: ${existingTags.join(
+  const systemPrompt = `You assign tags to a short blog status update. Pick the 1 or 2 best matching tags from this list: ${existingTags.join(
     ", ",
-  )}. Reply with the tag exactly as written, nothing else. If none fit well, reply NONE.`
+  )}. Reply with the tags comma-separated, exactly as written, nothing else. If none fit well, reply NONE.`
 
   try {
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -32,8 +32,12 @@ export async function POST(request) {
     })
 
     const data = await res.json()
-    const tag = data.choices?.[0]?.message?.content?.trim() || "NONE"
-    return Response.json({ tag })
+    const raw = data.choices?.[0]?.message?.content?.trim() || "NONE"
+    const tags = raw
+      .split(",")
+      .map(t => t.trim())
+      .filter(Boolean)
+    return Response.json({ tags })
   } catch (err) {
     console.error("suggest-tag failed:", err)
     return Response.json({ error: "Suggestion failed" }, { status: 500 })
