@@ -1,4 +1,11 @@
+import { requireUser } from "../../lib/requireUser"
+
 export async function POST(request) {
+  const user = await requireUser(request)
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   const { content, existingTags } = await request.json()
 
   if (

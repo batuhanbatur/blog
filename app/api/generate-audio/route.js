@@ -1,4 +1,7 @@
 import { createClient } from "@supabase/supabase-js"
+import { requireUser } from "../../lib/requireUser"
+
+const MAX_CONTENT_LENGTH = 20000
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -6,10 +9,43 @@ const supabase = createClient(
 )
 
 export async function POST(request) {
-  const { text, slug } = await request.json()
+  const user = await requireUser(request)
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  }
 
-  if (!text || !slug) {
-    return Response.json({ error: "Missing text or slug" }, { status: 400 })
+  const { articleId } = await request.json()
+
+  if (!articleId) {
+    return Response.json({ error: "Missing articleId" }, { status: 400 })
+  }
+
+  // Source the text from the database, never from the request body.
+  const { data: article, error: articleError } = await supabase
+    .from("articles")
+    .select("slug, content")
+    .eq("id", articleId)
+    .single()
+
+  if (articleError || !article) {
+    return Response.json({ error: "Article not found" }, { status: 404 })
+  }
+
+  const { slug, content } = article
+
+  if (typeof content !== "string" || !content.trim()) {
+    return Response.json({ error: "Article has no content" }, { status: 400 })
+  }
+
+  if (content.length > MAX_CONTENT_LENGTH) {
+    return Response.json(
+      { error: `Content exceeds ${MAX_CONTENT_LENGTH} characters` },
+      { status: 400 },
+    )
+  }
+
+  if (typeof slug !== "string" || !slug.trim()) {
+    return Response.json({ error: "Article has no slug" }, { status: 400 })
   }
 
   // 1. Call ElevenLabs
@@ -22,7 +58,7 @@ export async function POST(request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        text,
+        text: content,
         model_id: "eleven_multilingual_v2",
         voice_settings: {
           stability: 0.5,

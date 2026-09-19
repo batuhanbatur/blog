@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { supabase } from "../../lib/supabase"
+import { supabase, authHeaders } from "../../lib/supabase"
 
 const gifBtnStyle = {
   backgroundColor: "transparent",
@@ -118,7 +118,7 @@ export default function StatusDashboard() {
     try {
       const res = await fetch("/api/suggest-tag", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await authHeaders(),
         body: JSON.stringify({ content, existingTags }),
       })
       const data = await res.json()

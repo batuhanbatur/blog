@@ -1,6 +1,12 @@
 import { generateCollectionDescription } from "../../lib/classifyArticle"
+import { requireUser } from "../../lib/requireUser"
 
 export async function POST(request) {
+  const user = await requireUser(request)
+  if (!user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
   const { collection, titles } = await request.json()
 
   if (typeof collection !== "string" || !Array.isArray(titles)) {

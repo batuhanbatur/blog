@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { supabase } from "../../lib/supabase"
+import { supabase, authHeaders } from "../../lib/supabase"
 
 const gifBtnStyle = {
   backgroundColor: "transparent",
@@ -166,7 +166,7 @@ export default function ArticlesDashboard() {
     try {
       const res = await fetch("/api/classify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await authHeaders(),
         body: JSON.stringify({ title, content }),
       })
       if (!res.ok) throw new Error("classification failed")
@@ -206,7 +206,7 @@ export default function ArticlesDashboard() {
         const titles = articlesInCollection?.map(a => a.title) || [title]
         const res = await fetch("/api/collection-description", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: await authHeaders(),
           body: JSON.stringify({
             collection: classificationResult.collection,
             titles,
@@ -228,6 +228,12 @@ export default function ArticlesDashboard() {
     }
   }
 
+  // Audio is generated from the saved article, so live edits must be saved first.
+  const contentUnsaved =
+    !!editingArticle && content.trim() !== editingArticle.content.trim()
+  const audioDisabled =
+    generatingAudio || !editingArticle || !content.trim() || contentUnsaved
+
   const handleGenerateAudio = async () => {
     if (!editingArticle || !content.trim()) return
     setGeneratingAudio(true)
@@ -235,8 +241,8 @@ export default function ArticlesDashboard() {
     try {
       const res = await fetch("/api/generate-audio", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content, slug }),
+        headers: await authHeaders(),
+        body: JSON.stringify({ articleId: editingArticle.id }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Failed to generate audio")
@@ -913,22 +919,25 @@ export default function ArticlesDashboard() {
                       Audio exists · regenerate to overwrite
                     </p>
                   )}
+                  {contentUnsaved && (
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: "11px",
+                        opacity: 0.4,
+                      }}
+                    >
+                      Save your changes first
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={handleGenerateAudio}
-                  disabled={
-                    generatingAudio || !editingArticle || !content.trim()
-                  }
+                  disabled={audioDisabled}
                   style={{
                     ...gifBtnStyle,
-                    opacity:
-                      generatingAudio || !editingArticle || !content.trim()
-                        ? 0.3
-                        : 0.9,
-                    cursor:
-                      generatingAudio || !editingArticle || !content.trim()
-                        ? "not-allowed"
-                        : "pointer",
+                    opacity: audioDisabled ? 0.3 : 0.9,
+                    cursor: audioDisabled ? "not-allowed" : "pointer",
                   }}
                 >
                   {generatingAudio
