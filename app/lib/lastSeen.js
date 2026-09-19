@@ -2,6 +2,7 @@ const KEY = "blog_read_ids"
 const VISIT_KEY = "blog_visit_count"
 const SURVEY_DONE_KEY = "blog_survey_done"
 const SURVEY_DISMISSED_KEY = "blog_survey_dismissed"
+const VISIT_COUNTED_SESSION_KEY = "blog_visit_counted_session"
 
 export function getReadIds() {
   if (typeof window === "undefined") return []
@@ -21,6 +22,8 @@ export function markAsRead(id) {
 
 export function incrementVisitCount() {
   if (typeof window === "undefined") return
+  if (sessionStorage.getItem(VISIT_COUNTED_SESSION_KEY)) return
+  sessionStorage.setItem(VISIT_COUNTED_SESSION_KEY, "true")
   const count = getVisitCount()
   localStorage.setItem(VISIT_KEY, String(count + 1))
 }

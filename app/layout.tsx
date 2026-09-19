@@ -1,5 +1,6 @@
 import "./globals.css";
 import NavbarWrapper from "./components/NavbarWrapper";
+import SurveyTriggerWrapper from "./components/SurveyTriggerWrapper";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <NavbarWrapper />
         {children}
+        <SurveyTriggerWrapper />
         <Analytics />
         <SpeedInsights />
       </body>

@@ -10,12 +10,21 @@ import LastSeenMarker from "./LastSeenMarker"
 export default function TimelineClient({ allPosts }) {
   const [firstUnreadIndex, setFirstUnreadIndex] = useState(null)
   const [activeTag, setActiveTag] = useState(null)
+  const [allArticlesRead, setAllArticlesRead] = useState(false)
 
   useEffect(() => {
     const readIds = getReadIds()
     if (readIds.length === 0) return
     const index = allPosts.findIndex(post => !readIds.includes(post.id))
     if (index > 0) setFirstUnreadIndex(index)
+
+    const articles = allPosts.filter(post => post.type === "article")
+    if (
+      articles.length > 0 &&
+      articles.every(post => readIds.includes(post.id))
+    ) {
+      setAllArticlesRead(true)
+    }
   }, [allPosts])
 
   let statusCounter = 0
@@ -113,6 +122,21 @@ export default function TimelineClient({ allPosts }) {
           </div>
         )
       })}
+
+      {activeTag === null && allArticlesRead && (
+        <p
+          style={{
+            opacity: 0.5,
+            fontSize: "13px",
+            fontStyle: "italic",
+            fontFamily: "Satoshi, sans-serif",
+            textAlign: "center",
+            padding: "32px 0 0 0",
+          }}
+        >
+          There&apos;s nothing left to read. Thank you.
+        </p>
+      )}
     </div>
   )
 }

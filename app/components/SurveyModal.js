@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { markSurveyDone, dismissSurvey } from "../lib/lastSeen"
 
@@ -70,12 +70,25 @@ const questions = {
   },
 }
 
+const visuallyHiddenStyle = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  padding: 0,
+  margin: "-1px",
+  overflow: "hidden",
+  clip: "rect(0,0,0,0)",
+  whiteSpace: "nowrap",
+  border: 0,
+}
+
 function RadioGroup({ name, options, value, onChange }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
       {options.map(opt => (
         <label
           key={opt}
+          className="survey-radio-label"
           style={{
             display: "flex",
             alignItems: "center",
@@ -86,7 +99,16 @@ function RadioGroup({ name, options, value, onChange }) {
             color: "#1D1D0C",
           }}
         >
+          <input
+            type="radio"
+            name={name}
+            value={opt}
+            checked={value === opt}
+            onChange={() => onChange(opt)}
+            style={visuallyHiddenStyle}
+          />
           <span
+            className="survey-radio-dot"
             style={{
               width: "14px",
               height: "14px",
@@ -96,14 +118,6 @@ function RadioGroup({ name, options, value, onChange }) {
               flexShrink: 0,
               display: "inline-block",
             }}
-          />
-          <input
-            type="radio"
-            name={name}
-            value={opt}
-            checked={value === opt}
-            onChange={() => onChange(opt)}
-            style={{ display: "none" }}
           />
           {opt}
         </label>
@@ -133,6 +147,7 @@ export default function SurveyModal({ onClose, onComplete }) {
   const [answers, setAnswers] = useState({})
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const cardRef = useRef(null)
 
   const set = (key, val) => setAnswers(prev => ({ ...prev, [key]: val }))
 
@@ -171,6 +186,15 @@ export default function SurveyModal({ onClose, onComplete }) {
     onClose()
   }
 
+  useEffect(() => {
+    cardRef.current?.focus()
+    const onKeyDown = e => {
+      if (e.key === "Escape") handleLater()
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [])
+
   const textareaStyle = {
     width: "100%",
     backgroundColor: "transparent",
@@ -206,9 +230,15 @@ export default function SurveyModal({ onClose, onComplete }) {
         .survey-card::-webkit-scrollbar-track { background: transparent; }
         .survey-card::-webkit-scrollbar-thumb { background: rgba(29,29,12,0.15); border-radius: 3px; }
         .survey-card::-webkit-scrollbar-thumb:hover { background: rgba(29,29,12,0.25); }
+        .survey-radio-label:has(:focus-visible) .survey-radio-dot { outline: 2px solid rgba(29,29,12,0.6); outline-offset: 2px; }
       `}</style>
       <div
+        ref={cardRef}
         className="survey-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="survey-modal-title"
+        tabIndex={-1}
         style={{
           maxWidth: "520px",
           width: "100%",
@@ -223,13 +253,14 @@ export default function SurveyModal({ onClose, onComplete }) {
           gap: "28px",
           maxHeight: "80vh",
           overflowY: "auto",
+          outline: "none",
         }}
       >
         <div>
           <p style={{ fontSize: "13px", fontStyle: "italic", opacity: 0.6, margin: "0 0 8px 0" }}>
             Seems like you&apos;ve been visiting quite a lot.
           </p>
-          <p style={{
+          <p id="survey-modal-title" style={{
             fontSize: "18px",
             fontFamily: "Satoshi, sans-serif",
             fontWeight: "700",
