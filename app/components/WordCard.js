@@ -49,6 +49,7 @@ export default function WordCard({ phrase, explanation, phonemic }) {
         aria-describedby={tooltipId}
         onFocus={() => setVisible(true)}
         onBlur={() => setVisible(false)}
+        onClick={() => setVisible(true)}
         onKeyDown={e => {
           if (e.key === "Escape") setVisible(false)
         }}
@@ -60,7 +61,9 @@ export default function WordCard({ phrase, explanation, phonemic }) {
           border: "none",
           padding: 0,
           margin: 0,
-          font: "inherit",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
           color: "inherit",
         }}
       >

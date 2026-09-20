@@ -1,28 +1,30 @@
 "use client"
 
-import { useState, useId, useEffect } from "react"
+import { useState, useId } from "react"
 
 export default function GifWord({ phrase, gifUrl }) {
   const [visible, setVisible] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const tooltipId = useId()
 
-  useEffect(() => {
-    if (visible) setHasOpened(true)
-  }, [visible])
+  const open = () => {
+    setVisible(true)
+    setHasOpened(true)
+  }
 
   return (
     <span
       style={{ position: "relative", display: "inline-block" }}
-      onMouseEnter={() => setVisible(true)}
+      onMouseEnter={open}
       onMouseLeave={() => setVisible(false)}
     >
       <button
         type="button"
         aria-expanded={visible}
         aria-describedby={tooltipId}
-        onFocus={() => setVisible(true)}
+        onFocus={open}
         onBlur={() => setVisible(false)}
+        onClick={open}
         onKeyDown={e => {
           if (e.key === "Escape") setVisible(false)
         }}
@@ -34,7 +36,9 @@ export default function GifWord({ phrase, gifUrl }) {
           border: "none",
           padding: 0,
           margin: 0,
-          font: "inherit",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
           color: "inherit",
         }}
       >

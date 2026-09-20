@@ -39,6 +39,7 @@ export default function ArticleWord({ phrase, slug }) {
   const [article, setArticle] = useState(null)
   const [loading, setLoading] = useState(false)
   const leaveTimer = useRef(null)
+  const triggerRef = useRef(null)
 
   useEffect(() => {
     return () => {
@@ -70,6 +71,19 @@ export default function ArticleWord({ phrase, slug }) {
     }
   }
 
+  const closeAndReturnFocus = () => {
+    triggerRef.current?.focus()
+    clearLeaveTimer()
+    setVisible(false)
+  }
+
+  const handleKeyDown = e => {
+    if (e.key !== "Escape") return
+    e.preventDefault()
+    e.stopPropagation()
+    closeAndReturnFocus()
+  }
+
   const displayText =
     article?.hover_description ||
     (article?.excerpt
@@ -84,15 +98,15 @@ export default function ArticleWord({ phrase, slug }) {
       onMouseLeave={scheduleClose}
       onFocus={clearLeaveTimer}
       onBlur={scheduleClose}
+      onKeyDown={handleKeyDown}
     >
       <button
+        ref={triggerRef}
         type="button"
         aria-expanded={visible}
         aria-haspopup="true"
         onFocus={handleMouseEnter}
-        onKeyDown={e => {
-          if (e.key === "Escape") setVisible(false)
-        }}
+        onClick={handleMouseEnter}
         style={{
           fontStyle: "italic",
           cursor: "default",
@@ -101,7 +115,9 @@ export default function ArticleWord({ phrase, slug }) {
           border: "none",
           padding: 0,
           margin: 0,
-          font: "inherit",
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
           color: "inherit",
         }}
       >
@@ -185,7 +201,7 @@ export default function ArticleWord({ phrase, slug }) {
                 Check it out
               </a>
               <button
-                onClick={() => setVisible(false)}
+                onClick={closeAndReturnFocus}
                 tabIndex={visible ? 0 : -1}
                 style={{
                   fontSize: "10px",
