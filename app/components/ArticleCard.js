@@ -17,12 +17,21 @@ export default function ArticleCard({ post }) {
 
   const router = useRouter()
 
-  const handleClick = () => {
+  const href = `/articles/${post.slug}?continue=1`
+
+  const handleClick = e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+    e.preventDefault()
     setButtonState("clicked")
     setTimeout(() => {
-      router.push(`/articles/${post.slug}?continue=1`)
+      router.push(href)
     }, 30)
   }
+
+  const setHoverState = value => {
+    if (buttonState !== "clicked") setButtonState(value ? "hover" : "default")
+  }
+
   return (
     <div
       style={{
@@ -37,10 +46,11 @@ export default function ArticleCard({ post }) {
           color: "#1D1D0C",
           margin: "0 0 8px 0",
           lineHeight: "1.2",
-          cursor: "pointer",
         }}
       >
-        {post.title}
+        <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>
+          {post.title}
+        </Link>
       </h2>
 
       <div
@@ -87,25 +97,24 @@ export default function ArticleCard({ post }) {
         <RichText content={post.content.split("\n\n")[0]} />
       </div>
       <div style={{ textAlign: "center", marginTop: "24px" }}>
-        <span
+        <Link
+          href={href}
           onClick={handleClick}
-          onMouseEnter={() => {
-            if (buttonState !== "clicked") setButtonState("hover")
-          }}
-          onMouseLeave={() => {
-            if (buttonState !== "clicked") setButtonState("default")
-          }}
+          onMouseEnter={() => setHoverState(true)}
+          onMouseLeave={() => setHoverState(false)}
+          onFocus={() => setHoverState(true)}
+          onBlur={() => setHoverState(false)}
           style={{
             fontSize: "12px",
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             color: "#1D1D0C",
             opacity: 0.5,
-            cursor: "pointer",
+            textDecoration: "none",
           }}
         >
           {buttonLabels[buttonState]}
-        </span>
+        </Link>
       </div>
     </div>
   )

@@ -223,10 +223,10 @@ export default function TourPage() {
           The Articles page organizes everything by theme rather than date. The subheadline says it plainly: <em>Organized by theme. Not by date.</em>
         </p>
         <p style={p}>
-          Each collection appears as a card containing a title, a one-line description, and the articles that belong to it. The descriptions are written by GPT-4o. Given a collection name and its articles, it generates a single evocative line that captures the mood of the group.
+          Each collection appears as a card containing a title, a one-line description, and the articles that belong to it. The descriptions are written by GPT-4o-mini. Given a collection name and its articles, it generates a single evocative line that captures the mood of the group.
         </p>
         <p style={p}>
-          The collections themselves are determined during article classification. When I publish something new from the dashboard, GPT-4o-mini reads the content and decides which existing collection it belongs to, or proposes a new one if nothing fits. I review and approve every suggestion before anything goes live.
+          The collections themselves are determined during article classification. When I publish something new from the dashboard, GPT-4o-mini reads the content and decides which existing collection it belongs to, or proposes a new one if nothing fits. I review and approve every classification before it's saved. When that creates a new collection, its one-line description is generated and saved automatically — no separate review.
         </p>
         <p style={p}>
           The result is an archive that evolves alongside the writing. As new articles are published, existing collections deepen, new ones emerge, and the structure grows without requiring manual sorting.
@@ -267,7 +267,7 @@ export default function TourPage() {
           The dashboard is where everything is managed. Articles, status updates, daily messages, and the archive each have their own section. It lives behind authentication and is completely separate from the public-facing experience.
         </p>
         <p style={p}>
-          The most important part is the publishing workflow. After writing an article, I can trigger AI classification directly from the dashboard. GPT-4o-mini reads the content and returns topics, tone tags, an estimated reading time, and a collection assignment. Every suggestion is reviewed and can be edited before publication.
+          The most important part is the publishing workflow. After writing an article, I can trigger AI classification directly from the dashboard. GPT-4o-mini reads the content and returns topics, tone tags, an estimated reading time, and a collection assignment. Every suggestion is reviewed and can be edited before publication, except a new collection's one-line description, which saves automatically.
         </p>
         <p style={p}>
           The goal isn't to automate writing. It's to automate organization. The AI handles the repetitive tasks that would otherwise become difficult to maintain as the archive grows, while every publishing decision remains under human control.

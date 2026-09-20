@@ -1,9 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useId, useEffect } from "react"
 
 export default function GifWord({ phrase, gifUrl }) {
   const [visible, setVisible] = useState(false)
+  const [hasOpened, setHasOpened] = useState(false)
+  const tooltipId = useId()
+
+  useEffect(() => {
+    if (visible) setHasOpened(true)
+  }, [visible])
 
   return (
     <span
@@ -11,8 +17,32 @@ export default function GifWord({ phrase, gifUrl }) {
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
-      <span style={{ fontStyle: "italic", cursor: "default" }}>{phrase}</span>
+      <button
+        type="button"
+        aria-expanded={visible}
+        aria-describedby={tooltipId}
+        onFocus={() => setVisible(true)}
+        onBlur={() => setVisible(false)}
+        onKeyDown={e => {
+          if (e.key === "Escape") setVisible(false)
+        }}
+        style={{
+          fontStyle: "italic",
+          cursor: "default",
+          display: "inline",
+          background: "none",
+          border: "none",
+          padding: 0,
+          margin: 0,
+          font: "inherit",
+          color: "inherit",
+        }}
+      >
+        {phrase}
+      </button>
       <span
+        id={tooltipId}
+        role="tooltip"
         style={{
           display: "block",
           position: "absolute",
@@ -30,7 +60,7 @@ export default function GifWord({ phrase, gifUrl }) {
         }}
       >
         <img
-          src={gifUrl}
+          src={hasOpened ? gifUrl : undefined}
           style={{
             display: "block",
             borderRadius: "2px",

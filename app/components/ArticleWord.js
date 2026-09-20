@@ -82,8 +82,31 @@ export default function ArticleWord({ phrase, slug }) {
       style={{ position: "relative", display: "inline-block" }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={scheduleClose}
+      onFocus={clearLeaveTimer}
+      onBlur={scheduleClose}
     >
-      <span style={{ fontStyle: "italic", cursor: "default" }}>{phrase}</span>
+      <button
+        type="button"
+        aria-expanded={visible}
+        aria-haspopup="true"
+        onFocus={handleMouseEnter}
+        onKeyDown={e => {
+          if (e.key === "Escape") setVisible(false)
+        }}
+        style={{
+          fontStyle: "italic",
+          cursor: "default",
+          display: "inline",
+          background: "none",
+          border: "none",
+          padding: 0,
+          margin: 0,
+          font: "inherit",
+          color: "inherit",
+        }}
+      >
+        {phrase}
+      </button>
       <span
         style={{
           display: "block",
@@ -144,6 +167,7 @@ export default function ArticleWord({ phrase, slug }) {
             <span style={{ display: "flex", gap: "8px" }}>
               <a
                 href={`/articles/${slug}`}
+                tabIndex={visible ? 0 : -1}
                 target="_blank"
                 rel="noreferrer"
                 style={{
@@ -162,6 +186,7 @@ export default function ArticleWord({ phrase, slug }) {
               </a>
               <button
                 onClick={() => setVisible(false)}
+                tabIndex={visible ? 0 : -1}
                 style={{
                   fontSize: "10px",
                   letterSpacing: "0.08em",
