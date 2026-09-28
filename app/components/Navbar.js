@@ -12,7 +12,6 @@ const links = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -21,7 +20,6 @@ export default function Navbar() {
       setScrolled(window.scrollY > 20)
     }
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
       if (window.innerWidth >= 768) setMenuOpen(false)
     }
 
@@ -96,82 +94,81 @@ export default function Navbar() {
           </svg>
         </a>
 
-        {!isMobile && (
-          <ul
-            style={{
-              display: "flex",
-              gap: "32px",
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
-            }}
-          >
-            {links.map(({ href, label }) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                    fontSize: "13px",
-                    letterSpacing: "0.1em",
-                  }}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul
+          className="nav-links"
+          style={{
+            display: "flex",
+            gap: "32px",
+            listStyle: "none",
+            margin: 0,
+            padding: 0,
+          }}
+        >
+          {links.map(({ href, label }) => (
+            <li key={href}>
+              <a
+                href={href}
+                style={{
+                  color: "white",
+                  textDecoration: "none",
+                  fontSize: "13px",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
 
-        {isMobile && (
-          <button
-            onClick={() => setMenuOpen(o => !o)}
-            aria-label="Toggle menu"
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "4px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {menuOpen ? (
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 22 22"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="square"
-              >
-                <line x1="3" y1="3" x2="19" y2="19" />
-                <line x1="19" y1="3" x2="3" y2="19" />
-              </svg>
-            ) : (
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 22 22"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="square"
-              >
-                <line x1="2" y1="6" x2="20" y2="6" />
-                <line x1="2" y1="11" x2="20" y2="11" />
-                <line x1="2" y1="16" x2="20" y2="16" />
-              </svg>
-            )}
-          </button>
-        )}
+        <button
+          className="nav-menu-btn"
+          onClick={() => setMenuOpen(o => !o)}
+          aria-label="Toggle menu"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {menuOpen ? (
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="square"
+            >
+              <line x1="3" y1="3" x2="19" y2="19" />
+              <line x1="19" y1="3" x2="3" y2="19" />
+            </svg>
+          ) : (
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="square"
+            >
+              <line x1="2" y1="6" x2="20" y2="6" />
+              <line x1="2" y1="11" x2="20" y2="11" />
+              <line x1="2" y1="16" x2="20" y2="16" />
+            </svg>
+          )}
+        </button>
       </nav>
 
       {menuOpen && (
         <div
+          className="nav-mobile-menu"
           style={{
             position: "fixed",
             top: "54px",
@@ -204,6 +201,15 @@ export default function Navbar() {
           </ul>
         </div>
       )}
+
+      <style>{`
+        .nav-menu-btn, .nav-mobile-menu { display: none !important; }
+        @media (max-width: 767px) {
+          .nav-links { display: none !important; }
+          .nav-menu-btn { display: flex !important; }
+          .nav-mobile-menu { display: block !important; }
+        }
+      `}</style>
     </>
   )
 }
