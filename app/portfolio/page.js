@@ -35,6 +35,10 @@ function ProjectCard({ project }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={e => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setHovered(false)
+      }}
       style={{
         position: "relative",
         backgroundColor: "#111",
@@ -79,42 +83,43 @@ function ProjectCard({ project }) {
         )}
 
         {/* Hover overlay */}
-        {hovered && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: "rgba(0,0,0,0.85)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "stretch",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "24px",
-            }}
-          >
-            {project.links.tour && (
-              <LinkBtn href={project.links.tour}>Guided Tour</LinkBtn>
-            )}
-            {project.links.live && (
-              <LinkBtn href={project.links.live}>Live Site</LinkBtn>
-            )}
-            {project.links.github && (
-              <LinkBtn href={project.links.github}>GitHub</LinkBtn>
-            )}
-            {!project.links.live && !project.links.github && (
-              <span
-                style={{
-                  fontSize: "11px",
-                  color: "rgba(255,255,255,0.4)",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                COMING SOON
-              </span>
-            )}
-          </div>
-        )}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.85)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            justifyContent: "center",
+            gap: "10px",
+            padding: "24px",
+            opacity: hovered ? 1 : 0,
+            pointerEvents: hovered ? "auto" : "none",
+            transition: "opacity 0.2s ease",
+          }}
+        >
+          {project.links.tour && (
+            <LinkBtn href={project.links.tour}>Guided Tour</LinkBtn>
+          )}
+          {project.links.live && (
+            <LinkBtn href={project.links.live}>Live Site</LinkBtn>
+          )}
+          {project.links.github && (
+            <LinkBtn href={project.links.github}>GitHub</LinkBtn>
+          )}
+          {!project.links.live && !project.links.github && (
+            <span
+              style={{
+                fontSize: "11px",
+                color: "rgba(255,255,255,0.4)",
+                letterSpacing: "0.1em",
+              }}
+            >
+              COMING SOON
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Card footer */}
@@ -156,6 +161,8 @@ function LinkBtn({ href, children }) {
       rel="noopener noreferrer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
       style={{
         fontSize: "10px",
         letterSpacing: "0.12em",
