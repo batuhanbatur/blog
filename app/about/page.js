@@ -1,7 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
-
 const linkStyle = {
   display: "flex",
   alignItems: "center",
@@ -39,20 +37,12 @@ const contactStyle = {
 }
 
 export default function AboutPage() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener("resize", check)
-    return () => window.removeEventListener("resize", check)
-  }, [])
-
   const content = (
     <>
       <div
+        className="about-text"
         style={{
-          fontSize: isMobile ? "16px" : "18px",
+          fontSize: "18px",
           lineHeight: "1.8",
           color: "#1D1D0C",
         }}
@@ -173,95 +163,111 @@ export default function AboutPage() {
     </>
   )
 
-  if (isMobile) {
-    return (
-      <main style={{ padding: "48px 24px", fontFamily: "Satoshi, sans-serif" }}>
-        <h1
-          style={{
-            fontSize: "clamp(52px, 14vw, 68px)",
-            fontWeight: "800",
-            fontFamily: "Tanker, sans-serif",
-            color: "#1D1D0C",
-            lineHeight: "1.0",
-            margin: "0 0 32px 0",
-          }}
-        >
-          DEVELOPER. <br />
-          GAMER. <br />
-          RUNNER. <br />
-          ANIME LOVER.
-        </h1>
-
-        <div
-          style={{
-            width: "100%",
-            maxHeight: "480px",
-            marginBottom: "40px",
-            borderRadius: "4px",
-            overflow: "hidden",
-          }}
-        >
-          <img
-            src="/about.jpg"
-            alt="Batuhan Batur"
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "block",
-              objectFit: "cover",
-              objectPosition: "top",
-            }}
-          />
-        </div>
-
-        {content}
-      </main>
-    )
-  }
-
   return (
-    <main
-      style={{
-        maxWidth: "900px",
-        margin: "0 auto",
-        padding: "80px 24px",
-        fontFamily: "Satoshi, sans-serif",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "64px" }}>
-        <div style={{ flex: 1 }}>
+    <>
+      <div className="about-mobile">
+        <main
+          style={{ padding: "48px 24px", fontFamily: "Satoshi, sans-serif" }}
+        >
           <h1
             style={{
-              fontSize: "48px",
+              fontSize: "clamp(52px, 14vw, 68px)",
               fontWeight: "800",
               fontFamily: "Tanker, sans-serif",
               color: "#1D1D0C",
               lineHeight: "1.0",
-              margin: "0 0 48px 0",
+              margin: "0 0 32px 0",
             }}
           >
-            DEVELOPER. GAMER.
-            <br />
-            RUNNER. ANIME LOVER.
+            DEVELOPER. <br />
+            GAMER. <br />
+            RUNNER. <br />
+            ANIME LOVER.
           </h1>
-          {content}
-        </div>
 
-        <div
+          <div
+            style={{
+              width: "100%",
+              maxHeight: "480px",
+              marginBottom: "40px",
+              borderRadius: "4px",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              src="/about.jpg"
+              alt="Batuhan Batur"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "block",
+                objectFit: "cover",
+                objectPosition: "top",
+              }}
+            />
+          </div>
+
+          {content}
+        </main>
+      </div>
+
+      <div className="about-desktop">
+        <main
           style={{
-            width: "300px",
-            flexShrink: 0,
-            overflow: "hidden",
-            borderRadius: "4px",
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "80px 24px",
+            fontFamily: "Satoshi, sans-serif",
           }}
         >
-          <img
-            src="/about.jpg"
-            alt="Batuhan Batur"
-            style={{ width: "100%", display: "block", objectFit: "cover" }}
-          />
-        </div>
+          <div
+            style={{ display: "flex", alignItems: "flex-start", gap: "64px" }}
+          >
+            <div style={{ flex: 1 }}>
+              <h1
+                style={{
+                  fontSize: "48px",
+                  fontWeight: "800",
+                  fontFamily: "Tanker, sans-serif",
+                  color: "#1D1D0C",
+                  lineHeight: "1.0",
+                  margin: "0 0 48px 0",
+                }}
+              >
+                DEVELOPER. GAMER.
+                <br />
+                RUNNER. ANIME LOVER.
+              </h1>
+              {content}
+            </div>
+
+            <div
+              style={{
+                width: "300px",
+                flexShrink: 0,
+                overflow: "hidden",
+                borderRadius: "4px",
+              }}
+            >
+              <img
+                src="/about.jpg"
+                alt="Batuhan Batur"
+                style={{ width: "100%", display: "block", objectFit: "cover" }}
+              />
+            </div>
+          </div>
+        </main>
       </div>
-    </main>
+
+      <style>{`
+        .about-mobile { display: none; }
+        .about-desktop { display: block; }
+        @media (max-width: 767px) {
+          .about-mobile { display: block; }
+          .about-desktop { display: none; }
+          .about-text { font-size: 16px !important; }
+        }
+      `}</style>
+    </>
   )
 }
