@@ -251,7 +251,7 @@ export default function LandingLayout({ quote, attribution }) {
       <style>{`
         .landing-mobile { display: none; }
         .landing-desktop { display: block; }
-        @media (max-width: 767px) {
+        @media (max-width: 1059px) {
           .landing-mobile { display: block; }
           .landing-desktop { display: none; }
         }

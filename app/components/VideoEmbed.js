@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useNearViewport } from "../lib/useNearViewport"
 
 function getPosterUrl(url) {
@@ -8,6 +9,7 @@ function getPosterUrl(url) {
 
 export default function VideoEmbed({ title, url, ambient }) {
   const [containerRef, isNear] = useNearViewport({ rootMargin: "200px" })
+  const [posterFailed, setPosterFailed] = useState(false)
   const posterUrl = getPosterUrl(url)
 
   if (!ambient) {
@@ -78,10 +80,21 @@ export default function VideoEmbed({ title, url, ambient }) {
             }}
             aria-label={title}
           />
+        ) : posterFailed ? (
+          <div
+            style={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+              borderRadius: "6px",
+              backgroundColor: "rgba(29, 29, 12, 0.08)",
+            }}
+          />
         ) : (
           <img
             src={posterUrl}
             alt={title || ""}
+            onError={() => setPosterFailed(true)}
             style={{
               display: "block",
               width: "100%",

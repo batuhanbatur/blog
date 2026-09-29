@@ -20,7 +20,7 @@ export default function Navbar() {
       setScrolled(window.scrollY > 20)
     }
     const handleResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false)
+      if (window.innerWidth >= 1060) setMenuOpen(false)
     }
 
     handleResize()
@@ -204,7 +204,7 @@ export default function Navbar() {
 
       <style>{`
         .nav-menu-btn, .nav-mobile-menu { display: none !important; }
-        @media (max-width: 767px) {
+        @media (max-width: 1059px) {
           .nav-links { display: none !important; }
           .nav-menu-btn { display: flex !important; }
           .nav-mobile-menu { display: block !important; }

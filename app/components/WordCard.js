@@ -69,72 +69,71 @@ export default function WordCard({ phrase, explanation, phonemic }) {
       >
         {phrase}
       </button>
-      <span
-        id={tooltipId}
-        role="tooltip"
-        style={{
-          display: "block",
-          position: "absolute",
-          bottom: "calc(100% + 24px)",
-          left: "0%",
-          backgroundColor: "#BAB1A0",
-          border: "1px solid rgba(29,29,12,0.15)",
-          borderRadius: "4px",
-          padding: "16px",
-          zIndex: 100,
-          pointerEvents: "none",
-          width: "260px",
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.2s ease",
-        }}
-      >
+      {visible && (
         <span
+          id={tooltipId}
+          role="tooltip"
           style={{
             display: "block",
-            fontFamily: "Satoshi, sans-serif",
-            fontSize: "14px",
-            fontWeight: "600",
-            color: "#1D1D0C",
-            margin: "0 0 4px 0",
+            position: "absolute",
+            bottom: "calc(100% + 24px)",
+            left: "0%",
+            backgroundColor: "#BAB1A0",
+            border: "1px solid rgba(29,29,12,0.15)",
+            borderRadius: "4px",
+            padding: "16px",
+            zIndex: 100,
+            width: "260px",
           }}
         >
-          {phrase}
-        </span>
-        {phonemic && (
           <span
             style={{
               display: "block",
-              fontFamily: "monospace",
-              fontSize: "12px",
+              fontFamily: "Satoshi, sans-serif",
+              fontSize: "14px",
+              fontWeight: "600",
               color: "#1D1D0C",
-              opacity: 0.5,
-              margin: "0 0 10px 0",
+              margin: "0 0 4px 0",
             }}
           >
-            {phonemic}
+            {phrase}
           </span>
-        )}
-        <span
-          style={{
-            display: "block",
-            borderTop: "1px solid rgba(29,29,12,0.1)",
-            margin: "0 0 10px 0",
-          }}
-        />
-        <span
-          style={{
-            display: "block",
-            fontFamily: "Satoshi, sans-serif",
-            fontSize: "13px",
-            color: "#1D1D0C",
-            opacity: 0.8,
-            lineHeight: "1.6",
-          }}
-        >
-          {explanation}
+          {phonemic && (
+            <span
+              style={{
+                display: "block",
+                fontFamily: "monospace",
+                fontSize: "12px",
+                color: "#1D1D0C",
+                opacity: 0.5,
+                margin: "0 0 10px 0",
+              }}
+            >
+              {phonemic}
+            </span>
+          )}
+          <span
+            style={{
+              display: "block",
+              borderTop: "1px solid rgba(29,29,12,0.1)",
+              margin: "0 0 10px 0",
+            }}
+          />
+          <span
+            style={{
+              display: "block",
+              fontFamily: "Satoshi, sans-serif",
+              fontSize: "13px",
+              color: "#1D1D0C",
+              opacity: 0.8,
+              lineHeight: "1.6",
+            }}
+          >
+            {explanation}
+          </span>
+          {svgConnector}
         </span>
-        {svgConnector}
-      </span>
+      )}
     </span>
   )
 }

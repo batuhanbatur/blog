@@ -262,7 +262,7 @@ export default function AboutPage() {
       <style>{`
         .about-mobile { display: none; }
         .about-desktop { display: block; }
-        @media (max-width: 767px) {
+        @media (max-width: 1059px) {
           .about-mobile { display: block; }
           .about-desktop { display: none; }
           .about-text { font-size: 16px !important; }

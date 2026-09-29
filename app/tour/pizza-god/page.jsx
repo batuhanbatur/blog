@@ -1,3 +1,5 @@
+import VideoEmbed from "../../components/VideoEmbed"
+
 const media = {
   width: "100%",
   height: "auto",
@@ -52,22 +54,6 @@ const link = {
   textUnderlineOffset: "3px",
 }
 
-function AmbientVideo({ src, title }) {
-  return (
-    <div style={videoWrap}>
-      <video
-        src={src}
-        autoPlay
-        loop
-        muted
-        playsInline
-        aria-label={title}
-        style={video}
-      />
-    </div>
-  )
-}
-
 function TourImage({ src, alt }) {
   return <img src={src} alt={alt} style={media} />
 }
@@ -113,9 +99,10 @@ export default function PizzaGodTourPage() {
       {/* Creating the brand */}
       <div style={{ ...section, marginBottom: "80px" }}>
         <h2 style={h2}>Creating the brand</h2>
-        <AmbientVideo
-          src="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/scroll-driven.mp4"
+        <VideoEmbed
+          url="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/scroll-driven.mp4"
           title="Scroll-driven hero"
+          ambient
         />
         <p style={p}>
           The identity is a collision. Classical antiquity on one side: marble, serif typography, parchment. Street graffiti on the other: spray paint, neon, magenta drips. A god, defaced by his own worshippers.
@@ -180,9 +167,10 @@ export default function PizzaGodTourPage() {
       {/* Bugs that can't exist */}
       <div style={{ ...section, marginBottom: "80px" }}>
         <h2 style={h2}>Bugs that can't exist</h2>
-        <AmbientVideo
-          src="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/mirror-menu.mp4"
+        <VideoEmbed
+          url="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/mirror-menu.mp4"
           title="Mirrored menu and cart"
+          ambient
         />
         <p style={p}>
           On mobile, the menu opens from one side of the screen and the cart opens from the other. They mirror each other, which is the detail I'm quietly proudest of. And there's one thing that must never happen: both open at the same time.
@@ -201,9 +189,10 @@ export default function PizzaGodTourPage() {
       {/* Turning the graffiti off */}
       <div style={{ ...section, marginBottom: "80px" }}>
         <h2 style={h2}>Turning the graffiti off</h2>
-        <AmbientVideo
-          src="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/reduce-graffiti.mp4"
+        <VideoEmbed
+          url="https://eqepkemqhmiacogfsgot.supabase.co/storage/v1/object/public/status-videos/reduce-graffiti.mp4"
           title="Reducing the graffiti layer"
+          ambient
         />
         <p style={p}>
           All that spray paint gives Pizza God its character, but it's a lot, and for some visitors it's too much. A round button in the nav turns the graffiti layer off site-wide and remembers your choice. The classical layer underneath keeps working on its own.

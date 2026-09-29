@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
 
 const projects = [
@@ -29,16 +28,9 @@ const projects = [
 ]
 
 function ProjectCard({ project }) {
-  const [hovered, setHovered] = useState(false)
-
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={e => {
-        if (!e.currentTarget.contains(e.relatedTarget)) setHovered(false)
-      }}
+      className="project-card"
       style={{
         position: "relative",
         backgroundColor: "#111",
@@ -47,9 +39,6 @@ function ProjectCard({ project }) {
         overflow: "hidden",
         cursor: "default",
         transition: "border-color 0.2s",
-        borderColor: hovered
-          ? "rgba(255,255,255,0.2)"
-          : "rgba(255,255,255,0.08)",
       }}
     >
       {/* Card image area */}
@@ -84,6 +73,7 @@ function ProjectCard({ project }) {
 
         {/* Hover overlay */}
         <div
+          className="project-overlay"
           style={{
             position: "absolute",
             inset: 0,
@@ -94,9 +84,6 @@ function ProjectCard({ project }) {
             justifyContent: "center",
             gap: "10px",
             padding: "24px",
-            opacity: hovered ? 1 : 0,
-            pointerEvents: hovered ? "auto" : "none",
-            transition: "opacity 0.2s ease",
           }}
         >
           {project.links.tour && (
@@ -153,22 +140,16 @@ function ProjectCard({ project }) {
 }
 
 function LinkBtn({ href, children }) {
-  const [hovered, setHovered] = useState(false)
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
+      className="project-link"
       style={{
         fontSize: "10px",
         letterSpacing: "0.12em",
         textTransform: "uppercase",
-        color: hovered ? "#000000" : "#FFFFFF",
-        backgroundColor: hovered ? "rgba(255,255,255,0.9)" : "transparent",
         border: "1px solid rgba(255,255,255,0.4)",
         borderRadius: "3px",
         padding: "14px 0",
@@ -196,7 +177,32 @@ export default function PortfolioPage() {
         overscrollBehavior: "none",
       }}
     >
-      <style>{"html, body { background: #000; }"}</style>
+      <style>{`
+        html, body { background: #000; }
+        .project-card:hover,
+        .project-card:focus-within {
+          border-color: rgba(255,255,255,0.2);
+        }
+        .project-overlay {
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.2s ease;
+        }
+        .project-card:hover .project-overlay,
+        .project-card:focus-within .project-overlay {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .project-link {
+          color: #FFFFFF;
+          background-color: transparent;
+        }
+        .project-link:hover,
+        .project-link:focus {
+          color: #000000;
+          background-color: rgba(255,255,255,0.9);
+        }
+      `}</style>
       <div
         style={{
           maxWidth: "780px",

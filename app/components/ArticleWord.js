@@ -134,7 +134,7 @@ export default function ArticleWord({ phrase, slug }) {
           borderRadius: "4px",
           padding: "16px",
           zIndex: 100,
-          width: "280px",
+          width: "min(280px, calc(100vw - 48px))",
           opacity: visible ? 1 : 0,
           transition: "opacity 0.2s ease",
           pointerEvents: visible ? "auto" : "none",
