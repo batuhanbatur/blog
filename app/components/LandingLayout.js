@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+
 export default function LandingLayout({ quote, attribution }) {
   return (
     <>
@@ -28,9 +30,13 @@ export default function LandingLayout({ quote, attribution }) {
               lineHeight: 0,
             }}
           >
-            <img
+            <Image
               src="/profile.jpg"
               alt="Batuhan Batur"
+              width={1085}
+              height={1450}
+              sizes="160px"
+              fetchPriority="high"
               style={{
                 width: "100%",
                 height: "auto",
@@ -223,17 +229,18 @@ export default function LandingLayout({ quote, attribution }) {
                 flexShrink: 0,
                 borderRadius: "4px",
                 overflow: "hidden",
+                position: "relative",
               }}
             >
-              <img
+              <Image
                 src="/profile.jpg"
                 alt="Batuhan Batur"
+                fill
+                sizes="340px"
+                fetchPriority="high"
                 style={{
-                  width: "100%",
-                  height: "100%",
                   objectFit: "cover",
                   objectPosition: "center top",
-                  display: "block",
                 }}
               />
             </div>
