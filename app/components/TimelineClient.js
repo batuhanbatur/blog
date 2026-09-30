@@ -117,7 +117,7 @@ export default function TimelineClient({ allPosts }) {
         return (
           <div key={post.id}>
             {activeTag === null && index === firstUnreadIndex && <LastSeenMarker />}
-            <div style={{ padding: "48px 0" }}>{item}</div>
+            <div style={{ padding: "24px 0" }}>{item}</div>
             {!isLast && <SwordDivider />}
           </div>
         )
