@@ -16,8 +16,7 @@ Return ONLY a JSON object with this exact structure, no explanation, no markdown
   "secondaryTopics": ["topic3", "topic4"],
   "collection": "Collection Name & Subtitle",
   "languageTag": "Informal",
-  "toneTags": ["Reflective", "Honest"],
-  "readingTime": "10 min"
+  "toneTags": ["Reflective", "Honest"]
 }
 
 Rules:
@@ -27,7 +26,6 @@ Rules:
 - Existing collections you can reuse if they fit: ${existingCollections.length > 0 ? existingCollections.join(", ") : "none yet"}. Prefer reusing an existing collection over creating a new one when the article clearly belongs to the same theme.
 - languageTag: one of exactly "Formal", "Informal", "Technical", or "Mixed" — based on the writing style
 - toneTags: 2-4 adjectives describing the emotional tone. Examples: Reflective, Honest, Motivational, Casual, Melancholic, Humorous, Critical
-- readingTime: estimated reading time like "5 min", "10 min", "15 min" — based on content length (average reading speed ~200 words/min)
 - Be specific and personal, not generic. Avoid vague terms like "Life" or "Thoughts".`
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {

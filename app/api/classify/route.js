@@ -7,7 +7,7 @@ export async function POST(request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { title, content } = await request.json()
+  const { title, content, existingCollections } = await request.json()
 
   if (
     typeof title !== "string" ||
@@ -17,8 +17,16 @@ export async function POST(request) {
     return Response.json({ error: "Invalid input" }, { status: 400 })
   }
 
+  const collections = Array.isArray(existingCollections)
+    ? existingCollections.filter(c => typeof c === "string")
+    : []
+
   try {
-    const result = await classifyArticle({ title, content })
+    const result = await classifyArticle({
+      title,
+      content,
+      existingCollections: collections,
+    })
     return Response.json(result)
   } catch (err) {
     console.error("classify failed:", err)

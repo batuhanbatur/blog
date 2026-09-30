@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { supabase, authHeaders } from "../../lib/supabase"
+import { estimateReadingTime } from "../../lib/estimateReadingTime"
 
 const gifBtnStyle = {
   backgroundColor: "transparent",
@@ -164,10 +165,14 @@ export default function ArticlesDashboard() {
     setClassifying(true)
     setClassificationError(null)
     try {
+      const { data: collectionRows } = await supabase
+        .from("collections")
+        .select("name")
+      const existingCollections = (collectionRows || []).map(c => c.name)
       const res = await fetch("/api/classify", {
         method: "POST",
         headers: await authHeaders(),
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, existingCollections }),
       })
       if (!res.ok) throw new Error("classification failed")
       const result = await res.json()
@@ -272,7 +277,7 @@ export default function ArticlesDashboard() {
       content: content.trim(),
       excerpt: excerpt.trim() || content.trim().split("\n\n")[0].slice(0, 200),
       date,
-      reading_time: readingTime.trim() || "5 min",
+      reading_time: readingTime.trim() || estimateReadingTime(content),
       language_tag: languageTag,
       tone_tags: toneTags
         .split(",")
