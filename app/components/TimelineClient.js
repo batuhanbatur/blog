@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { getReadIds } from "../lib/lastSeen"
 import ArticleCard from "./ArticleCard"
 import StatusUpdateWrapper from "./StatusUpdateWrapper"
@@ -11,6 +11,12 @@ export default function TimelineClient({ allPosts }) {
   const [firstUnreadIndex, setFirstUnreadIndex] = useState(null)
   const [activeTag, setActiveTag] = useState(null)
   const [allArticlesRead, setAllArticlesRead] = useState(false)
+  const [spotlightMode, setSpotlightMode] = useState(null)
+  const spotlightRef = useRef(null)
+  const cueRef = useRef(null)
+  const timerRef = useRef(null)
+  const modeRef = useRef(null)
+  const doneRef = useRef(false)
 
   useEffect(() => {
     const readIds = getReadIds()
@@ -27,6 +33,62 @@ export default function TimelineClient({ allPosts }) {
     }
   }, [allPosts])
 
+  useEffect(() => {
+    if (!spotlightRef.current) return
+
+    const setMode = mode => {
+      modeRef.current = mode
+      setSpotlightMode(mode)
+    }
+    const stop = () => {
+      clearTimeout(timerRef.current)
+      doneRef.current = true
+      setMode(null)
+    }
+
+    timerRef.current = setTimeout(() => {
+      const target = spotlightRef.current
+      if (doneRef.current || !target || window.scrollY >= 50) return
+      const focused = document.activeElement
+      const focusElsewhere =
+        focused && focused !== document.body && !target.contains(focused)
+      if (focusElsewhere) return
+      const rect = target.getBoundingClientRect()
+      setMode(rect.top < window.innerHeight ? "spotlight" : "cue")
+    }, 5000)
+
+    const onKeyDown = e => {
+      if (!modeRef.current || e.key === "Escape") stop()
+    }
+    const onFocusIn = e => {
+      if (!modeRef.current) return stop()
+      const inside =
+        spotlightRef.current?.contains(e.target) ||
+        cueRef.current?.contains(e.target)
+      if (!inside) stop()
+    }
+
+    window.addEventListener("scroll", stop)
+    window.addEventListener("click", stop)
+    window.addEventListener("keydown", onKeyDown)
+    window.addEventListener("focusin", onFocusIn)
+    return () => {
+      clearTimeout(timerRef.current)
+      window.removeEventListener("scroll", stop)
+      window.removeEventListener("click", stop)
+      window.removeEventListener("keydown", onKeyDown)
+      window.removeEventListener("focusin", onFocusIn)
+    }
+  }, [])
+
+  const handleCueClick = () => {
+    clearTimeout(timerRef.current)
+    doneRef.current = true
+    modeRef.current = null
+    setSpotlightMode(null)
+    spotlightRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+  }
+
   let statusCounter = 0
 
   const tags = [
@@ -40,6 +102,30 @@ export default function TimelineClient({ allPosts }) {
         p => p.type === "status" && (p.tags || []).includes(activeTag)
       )
     : allPosts
+
+  const renderSpotlight = (children, withBackdrop) => (
+    <div
+      ref={spotlightRef}
+      style={{
+        position: "relative",
+        zIndex: spotlightMode === "spotlight" ? 41 : "auto",
+      }}
+    >
+      {withBackdrop && spotlightMode === "spotlight" && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: "-16px",
+            backgroundColor: "#CCC6B8",
+            borderRadius: "8px",
+            zIndex: -1,
+          }}
+        />
+      )}
+      {children}
+    </div>
+  )
 
   const pillStyle = active => ({
     borderRadius: "999px",
@@ -89,13 +175,47 @@ export default function TimelineClient({ allPosts }) {
         </p>
       )}
 
+      {spotlightMode === "spotlight" && activeTag === null && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 40,
+            animation: "fadeIn 0.8s ease forwards",
+          }}
+        />
+      )}
+
+      {spotlightMode === "cue" && activeTag === null && (
+        <button
+          ref={cueRef}
+          onClick={handleCueClick}
+          style={{
+            ...pillStyle(true),
+            textTransform: "uppercase",
+            position: "fixed",
+            bottom: "32px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 42,
+            whiteSpace: "nowrap",
+            animation: "fadeIn 0.8s ease forwards",
+          }}
+        >
+          Explore the posts ↓
+        </button>
+      )}
+
       {visiblePosts.map((post, index) => {
         const isLast = index === visiblePosts.length - 1
+        const isSpotlit = index === 0 && activeTag === null
         let item = null
 
         if (post.type === "article") {
           statusCounter = 0
-          item = <ArticleCard key={post.id} post={post} />
+          const card = <ArticleCard key={post.id} post={post} />
+          item = isSpotlit ? renderSpotlight(card, true) : card
         }
 
         if (post.type === "status") {
@@ -108,7 +228,11 @@ export default function TimelineClient({ allPosts }) {
               style={{ display: "flex", justifyContent: isRight ? "flex-end" : "flex-start" }}
             >
               <div className="tl-status-card" style={{ width: "60%" }}>
-                <StatusUpdateWrapper post={post} />
+                {isSpotlit ? (
+                  renderSpotlight(<StatusUpdateWrapper post={post} />, false)
+                ) : (
+                  <StatusUpdateWrapper post={post} />
+                )}
               </div>
             </div>
           )
