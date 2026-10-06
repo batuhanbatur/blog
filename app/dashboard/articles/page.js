@@ -49,9 +49,6 @@ export default function ArticlesDashboard() {
   const [classificationError, setClassificationError] = useState(null)
   const [savingClassification, setSavingClassification] = useState(false)
 
-  const [generatingAudio, setGeneratingAudio] = useState(false)
-  const [audioError, setAudioError] = useState(null)
-
   const textareaRef = useRef(null)
 
   const fetchArticles = async () => {
@@ -230,38 +227,6 @@ export default function ArticlesDashboard() {
       setClassificationError("Failed to save classification. Try again.")
     } finally {
       setSavingClassification(false)
-    }
-  }
-
-  // Audio is generated from the saved article, so live edits must be saved first.
-  const contentUnsaved =
-    !!editingArticle && content.trim() !== editingArticle.content.trim()
-  const audioDisabled =
-    generatingAudio || !editingArticle || !content.trim() || contentUnsaved
-
-  const handleGenerateAudio = async () => {
-    if (!editingArticle || !content.trim()) return
-    setGeneratingAudio(true)
-    setAudioError(null)
-    try {
-      const res = await fetch("/api/generate-audio", {
-        method: "POST",
-        headers: await authHeaders(),
-        body: JSON.stringify({ articleId: editingArticle.id }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Failed to generate audio")
-
-      await supabase
-        .from("articles")
-        .update({ audio_url: data.url })
-        .eq("id", editingArticle.id)
-
-      setEditingArticle(prev => ({ ...prev, audio_url: data.url }))
-    } catch (e) {
-      setAudioError(e.message)
-    } finally {
-      setGeneratingAudio(false)
     }
   }
 
@@ -896,75 +861,17 @@ export default function ArticlesDashboard() {
               )}
             </div>
 
-            {/* Audio Generation */}
+            {/* Existing recordings remain playable. */}
             <div
               style={{
                 borderTop: "1px solid rgba(204, 198, 184, 0.1)",
                 paddingTop: "24px",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "16px",
-                }}
-              >
-                <div>
-                  <label style={labelStyle}>Audio</label>
-                  {editingArticle?.audio_url && (
-                    <p
-                      style={{
-                        margin: "4px 0 0 0",
-                        fontSize: "11px",
-                        opacity: 0.4,
-                      }}
-                    >
-                      Audio exists · regenerate to overwrite
-                    </p>
-                  )}
-                  {contentUnsaved && (
-                    <p
-                      style={{
-                        margin: "4px 0 0 0",
-                        fontSize: "11px",
-                        opacity: 0.4,
-                      }}
-                    >
-                      Save your changes first
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={handleGenerateAudio}
-                  disabled={audioDisabled}
-                  style={{
-                    ...gifBtnStyle,
-                    opacity: audioDisabled ? 0.3 : 0.9,
-                    cursor: audioDisabled ? "not-allowed" : "pointer",
-                  }}
-                >
-                  {generatingAudio
-                    ? "Generating..."
-                    : editingArticle?.audio_url
-                      ? "Regenerate Audio"
-                      : "Generate Audio"}
-                </button>
-              </div>
-
-              {audioError && (
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#ff6464",
-                    margin: "0 0 12px 0",
-                  }}
-                >
-                  {audioError}
-                </p>
-              )}
-
+              <label style={labelStyle}>Audio</label>
+              <p style={{ fontSize: "12px", opacity: 0.6 }}>
+                Audio generation is no longer available.
+              </p>
               {editingArticle?.audio_url && (
                 <audio
                   controls

@@ -9,6 +9,10 @@ const supabase = createClient(
 )
 
 export async function requireUser(request) {
+  // Fail closed until the owner is explicitly configured on the server.
+  const adminId = process.env.BLOG_ADMIN_USER_ID?.trim()
+  if (!adminId) return null
+
   const header = request.headers.get("authorization")
   if (!header) return null
 
@@ -19,7 +23,7 @@ export async function requireUser(request) {
 
   try {
     const { data, error } = await supabase.auth.getUser(token)
-    if (error || !data?.user) return null
+    if (error || !data?.user || data.user.id !== adminId) return null
     return data.user
   } catch (err) {
     console.error("requireUser failed:", err)
