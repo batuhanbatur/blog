@@ -1,6 +1,8 @@
 import { unstable_noStore as noStore } from "next/cache"
 import { supabase } from "../lib/supabase"
 
+export const metadata = { title: "Archive" }
+
 export default async function ArchivePage() {
   noStore()
 
@@ -63,7 +65,7 @@ export default async function ArchivePage() {
         }}
       >
         {messages && messages.length === 0 && (
-          <p style={{ opacity: 0.4, fontSize: "14px" }}>No messages yet.</p>
+          <p style={{ opacity: 0.7, fontSize: "14px" }}>No messages yet.</p>
         )}
         {messages &&
           messages.map(msg => (
@@ -104,7 +106,7 @@ export default async function ArchivePage() {
                 style={{
                   fontSize: "11px",
                   color: "#1D1D0C",
-                  opacity: 0.3,
+                  opacity: 0.7,
                   margin: 0,
                 }}
               >

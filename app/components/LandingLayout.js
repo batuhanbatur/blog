@@ -53,7 +53,7 @@ export default function LandingLayout({ quote, attribution }) {
             style={{
               fontSize: "14px",
               color: "#1D1D0C",
-              opacity: 0.6,
+              opacity: 0.7,
               margin: "0 0 24px 0",
               lineHeight: "1.6",
               fontFamily: "Satoshi, sans-serif",
@@ -70,7 +70,7 @@ export default function LandingLayout({ quote, attribution }) {
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
                 color: "#1D1D0C",
-                opacity: 0.4,
+                opacity: 0.7,
                 margin: "0 0 8px 0",
                 fontFamily: "Satoshi, sans-serif",
               }}
@@ -104,7 +104,7 @@ export default function LandingLayout({ quote, attribution }) {
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color: "#1D1D0C",
-                opacity: 0.6,
+                opacity: 0.7,
                 margin: 0,
                 fontFamily: "Aktura, sans-serif",
               }}
@@ -160,7 +160,7 @@ export default function LandingLayout({ quote, attribution }) {
                   style={{
                     fontSize: "14px",
                     color: "#1D1D0C",
-                    opacity: 0.6,
+                    opacity: 0.7,
                     margin: "0",
                     lineHeight: "1.6",
                     fontFamily: "Satoshi, sans-serif",
@@ -178,7 +178,7 @@ export default function LandingLayout({ quote, attribution }) {
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
                     color: "#1D1D0C",
-                    opacity: 0.4,
+                    opacity: 0.7,
                     margin: "0 0 8px 0",
                     fontFamily: "Satoshi, sans-serif",
                   }}
@@ -212,7 +212,7 @@ export default function LandingLayout({ quote, attribution }) {
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     color: "#1D1D0C",
-                    opacity: 0.6,
+                    opacity: 0.7,
                     margin: 0,
                     fontFamily: "Aktura, sans-serif",
                   }}

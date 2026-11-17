@@ -53,8 +53,7 @@ export default function TimelineClient({ allPosts }) {
       const focusElsewhere =
         focused && focused !== document.body && !target.contains(focused)
       if (focusElsewhere) return
-      const rect = target.getBoundingClientRect()
-      setMode(rect.top < window.innerHeight ? "spotlight" : "cue")
+      setMode("cue")
     }, 5000)
 
     const onKeyDown = e => {
@@ -103,29 +102,8 @@ export default function TimelineClient({ allPosts }) {
       )
     : allPosts
 
-  const renderSpotlight = (children, withBackdrop) => (
-    <div
-      ref={spotlightRef}
-      style={{
-        position: "relative",
-        zIndex: spotlightMode === "spotlight" ? 41 : "auto",
-      }}
-    >
-      {withBackdrop && spotlightMode === "spotlight" && (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: "-16px",
-            backgroundColor: "#CCC6B8",
-            borderRadius: "8px",
-            zIndex: -1,
-          }}
-        />
-      )}
-      {children}
-    </div>
-  )
+  // Marks the first post so the idle cue knows where to scroll.
+  const renderSpotlight = children => <div ref={spotlightRef}>{children}</div>
 
   const pillStyle = active => ({
     borderRadius: "999px",
@@ -170,21 +148,9 @@ export default function TimelineClient({ allPosts }) {
       )}
 
       {activeTag && visiblePosts.length === 0 && (
-        <p style={{ opacity: 0.4, fontSize: "13px", fontFamily: "Satoshi, sans-serif" }}>
+        <p style={{ opacity: 0.7, fontSize: "13px", fontFamily: "Satoshi, sans-serif" }}>
           Nothing here yet.
         </p>
-      )}
-
-      {spotlightMode === "spotlight" && activeTag === null && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 40,
-            animation: "fadeIn 0.8s ease forwards",
-          }}
-        />
       )}
 
       {spotlightMode === "cue" && activeTag === null && (
@@ -215,7 +181,7 @@ export default function TimelineClient({ allPosts }) {
         if (post.type === "article") {
           statusCounter = 0
           const card = <ArticleCard key={post.id} post={post} />
-          item = isSpotlit ? renderSpotlight(card, true) : card
+          item = isSpotlit ? renderSpotlight(card) : card
         }
 
         if (post.type === "status") {
@@ -229,7 +195,7 @@ export default function TimelineClient({ allPosts }) {
             >
               <div className="tl-status-card" style={{ width: "60%" }}>
                 {isSpotlit ? (
-                  renderSpotlight(<StatusUpdateWrapper post={post} />, false)
+                  renderSpotlight(<StatusUpdateWrapper post={post} />)
                 ) : (
                   <StatusUpdateWrapper post={post} />
                 )}
@@ -250,7 +216,7 @@ export default function TimelineClient({ allPosts }) {
       {activeTag === null && allArticlesRead && (
         <p
           style={{
-            opacity: 0.5,
+            opacity: 0.7,
             fontSize: "13px",
             fontStyle: "italic",
             fontFamily: "Satoshi, sans-serif",

@@ -7,7 +7,7 @@ export default function LastSeenMarker() {
       alignItems: "center",
       gap: "16px",
       padding: "32px 0",
-      opacity: 0.55,
+      opacity: 0.7,
     }}>
       <div style={{ flex: 1, height: "1px", backgroundColor: "#1D1D0C", opacity: 0.2 }} />
       <span style={{

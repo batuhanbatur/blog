@@ -1,6 +1,8 @@
 import { unstable_noStore as noStore } from "next/cache"
 import { supabase } from "../lib/supabase"
 
+export const metadata = { title: "Articles" }
+
 export default async function ArticlesPage() {
   noStore()
 
@@ -185,7 +187,7 @@ export default async function ArticlesPage() {
                     <span
                       style={{
                         fontSize: "12px",
-                        opacity: 0.4,
+                        opacity: 0.7,
                         letterSpacing: "0.08em",
                         padding: "4px 0",
                       }}
@@ -198,7 +200,7 @@ export default async function ArticlesPage() {
                 <p
                   style={{
                     fontSize: "11px",
-                    opacity: 0.3,
+                    opacity: 0.7,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
                     margin: 0,

@@ -9,7 +9,8 @@ export default function SwordDivider() {
     >
       <img
         src="/sword-divider.webp"
-        alt="divider"
+        alt=""
+        aria-hidden="true"
         style={{
           width: "64px",
           opacity: 0.6,

@@ -27,7 +27,7 @@ export default function StatusUpdate({ post }) {
         style={{
           fontSize: "11px",
           color: "#1D1D0C",
-          opacity: 0.35,
+          opacity: 0.7,
           letterSpacing: "0.08em",
         }}
       >

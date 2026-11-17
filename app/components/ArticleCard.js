@@ -64,7 +64,9 @@ export default function ArticleCard({ post }) {
       >
         {[
           { value: post.language_tag, label: "Language" },
-          ...(post.tone_tags || []).map(t => ({ value: t, label: "Tone" })),
+          ...(post.tone_tags || [])
+            .filter(t => t !== post.language_tag)
+            .map(t => ({ value: t, label: "Tone" })),
         ].map(({ value, label }) => (
           <TagWithTooltip key={`${label}:${value}`} value={value} label={label} />
         ))}
@@ -77,10 +79,10 @@ export default function ArticleCard({ post }) {
           marginBottom: "16px",
         }}
       >
-        <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.4 }}>
+        <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.7 }}>
           {post.date}
         </span>
-        <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.4 }}>
+        <span style={{ fontSize: "12px", color: "#1D1D0C", opacity: 0.7 }}>
           {post.reading_time} read
         </span>
       </div>
@@ -109,7 +111,7 @@ export default function ArticleCard({ post }) {
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             color: "#1D1D0C",
-            opacity: 0.5,
+            opacity: 0.7,
             textDecoration: "none",
           }}
         >

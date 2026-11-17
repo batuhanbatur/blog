@@ -21,7 +21,7 @@ const labelStyle = {
   letterSpacing: "0.12em",
   textTransform: "uppercase",
   color: "#1D1D0C",
-  opacity: 0.4,
+  opacity: 0.7,
   display: "block",
   marginBottom: "4px",
 }
@@ -31,7 +31,7 @@ const directLinkStyle = {
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: "#1D1D0C",
-  opacity: 0.4,
+  opacity: 0.7,
   textDecoration: "none",
 }
 
